@@ -15,7 +15,7 @@ export default function Home() {
             <p className="pb-4 lg:py-6 lg:max-w-[80%] mx-auto text-center md:text-left md:mx-0">Catch a royal ride and travel in style from any point to a destination you desire within Texas in time.</p>
             <Button asChild className="mx-auto block text-center w-max md:mx-0"><Link href={''}>Start today</Link></Button>
           </div>
-          <div className="lg:px-6 flex-1"><Image src={CAR} alt="hero" className="w-full opacity-70"/></div>
+          <div className="pb-5 md:pb-0 lg:px-6 flex-1 flex items-end"><Image src={CAR} alt="hero" className="w-full opacity-70"/></div>
       </section>
     </main>
   );
