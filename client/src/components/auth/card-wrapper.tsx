@@ -1,6 +1,5 @@
 import { motion } from "framer-motion";
 import AuthHeader from "./auth-header";
-import BackButton from "./back-button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 
   
