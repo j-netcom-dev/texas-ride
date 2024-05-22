@@ -8,7 +8,7 @@ const data =[
 
 const BarChartComponent =() =>{
   return (<ResponsiveContainer height='100%' width='100%'>
-     <BarChart width={500} height={400} data={data} margin={{right: 30}}>
+     <BarChart width={500} height={300} data={data} margin={{right: 30}}>
     <YAxis />
     <XAxis dataKey='name' />
     <CartesianGrid strokeDasharray='5 5'/>
