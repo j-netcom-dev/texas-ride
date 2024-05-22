@@ -12,6 +12,6 @@ export type TopBarPropTypes ={
 
 export type CardPropsType ={
     name: string,
-    value: number,
+    value: number | string,
     icon: LucideIcon,
 }
