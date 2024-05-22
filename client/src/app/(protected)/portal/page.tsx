@@ -13,10 +13,10 @@ const page = () => {
       <TopBar page='Dashboard'/>
       <div className="flex flex-col gap-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 w-full gap-8">
-          <DataCard name='Rides' value={20} icon={CarFront}/>
-          <DataCard name='Reviews' value={4.6} icon={Star}/>
-          <DataCard name='Complete' value={20} icon={CircleCheckBig}/>
-          <DataCard name='Rank' value={2} icon={Boxes}/>
+          <DataCard name='Completed Rides' value={20} icon={CarFront}/>
+          <DataCard name='Client Rating' value={4.6} icon={Star}/>
+          <DataCard name='Customer Satisfaction' value={20} icon={CircleCheckBig}/>
+          <DataCard name='Driver Rank' value={2} icon={Boxes}/>
         </div>
         <div className="grid xl:grid-cols-2 w-full gap-10">
           <GridItem title='Rides on each week day'><AreaChart /></GridItem>
