@@ -14,7 +14,6 @@ const SideMenu = () => {
   return isDesktop? (<header className='fixed top-0 left-0 shadow rounded-lg w-[200px] h-full grid grid-rows-[max-content_auto]'>
   <div className="border-b px-8 py-6">
     <Image alt="LOGO" src={LOGO}/>
-    {/* <h2 className="text-center">Logo</h2> */}
   </div>
   <nav className="flex flex-col justify-between pb-12 pt-4">
     <div className="flex flex-col gap-2">

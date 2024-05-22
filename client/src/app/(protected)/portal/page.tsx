@@ -7,7 +7,7 @@ import AreaChart from '@/components/charts/BarChart';
 import GridItem from '@/components/GridItem';
 import DataTable from '@/components/DataTable';
 
-const page = () => {
+const Portal = () => {
   return (
     <main className='grid grid-rows-[max-content_auto] p-4 gap-8 bg-[#dcdee0bb]'>
       <TopBar page='Dashboard'/>
@@ -27,4 +27,4 @@ const page = () => {
   )
 }
 
-export default page;
+export default Portal;

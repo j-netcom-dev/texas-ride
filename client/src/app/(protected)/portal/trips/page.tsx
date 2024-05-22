@@ -9,7 +9,7 @@ import FormInput from '@/components/form-input';
 import { Button } from '@/components/ui/button';
 import { useForm } from 'react-hook-form';
 
-const page = () => {
+const Trips = () => {
   const {handleSubmit, reset, register, formState: {errors}, } =useForm({});
   const create =() =>{
 
@@ -44,4 +44,4 @@ const page = () => {
   )
 }
 
-export default page;
+export default Trips;

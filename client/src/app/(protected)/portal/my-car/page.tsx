@@ -5,12 +5,11 @@ import TopBar from '@/components/TopBar';
 import { useForm } from 'react-hook-form';
 import DataCard from '@/components/DataCard';
 import GridItem from '@/components/GridItem';
-import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Axe, Barcode, Component, Palette } from 'lucide-react';
 import FormInput from '@/components/form-input';
+import { Axe, Barcode, Component, Palette } from 'lucide-react';
 
-const page = () => {
+const MyCar = () => {
   const save =(values: Record<string, any>) =>{
 
   }
@@ -44,4 +43,4 @@ const page = () => {
   )
 }
 
-export default page;
+export default MyCar;
