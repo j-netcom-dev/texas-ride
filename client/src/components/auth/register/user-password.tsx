@@ -6,7 +6,7 @@ import CardWrapper from '../card-wrapper';
 import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import FormInput from '@/components/form-input';
-import { get_user_details, save_user_data } from '@/utils/storage';
+import { destroy_user_details, get_user_details, save_user_data } from '@/utils/storage';
 
 interface formPropTypes {
     step: number,
@@ -25,6 +25,7 @@ const UserPasswordForm = ({step, setStep}: formPropTypes) => {
     const save = (data: any) =>{
         save_user_data({step, data});
         reset();
+        destroy_user_details();
         setStep(step +1);
     }
     
