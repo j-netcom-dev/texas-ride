@@ -1,9 +1,11 @@
-import React from 'react';
-import Link from 'next/link';
+'use client';
+import React, { useEffect } from 'react';
 import CardWrapper from '../card-wrapper';
 import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import FormInput from '@/components/form-input';
+import { get_user_details, save_user_data } from '@/utils/storage';
+import { UserData } from '@/utils/types';
 
 interface formPropTypes {
     step: number,
@@ -11,16 +13,24 @@ interface formPropTypes {
 }
 
 const UserContact = ({step, setStep}: formPropTypes) => {
-    const {handleSubmit, reset, register, formState: {errors}} =useForm();
-    const save = () =>{
+    const {handleSubmit, reset, register, formState: {errors}, setValue} =useForm();
+    useEffect(() =>{
+        const user_details =get_user_details(step) as UserData || undefined;
+        if(!user_details) return;
+        [...Object.keys(user_details.data)].forEach(key =>setValue(key, user_details.data[key]))
+    }, [step]);
+
+    const save = (data: any) =>{
+        save_user_data({step, data});
+        reset();
         setStep(step +1);
     }
     
     return (
         <CardWrapper title='Contact details'>
             <form className="flex flex-col gap-4" onSubmit={handleSubmit(save)}>
-                <FormInput name='email' validations={{required: {value: true, message: 'Email required*'}}} label='Email address' errors={errors} register={register} placehoder='Enter your email'/>
-                <FormInput name='phone' validations={{required: {value: true, message: 'Phone number required*'}}} label='Phone number' errors={errors} register={register} placehoder='Enter your phone number'/>
+                <FormInput name='email' validations={{required: {value: true, message: 'Email required*'}, pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,message: 'Invalid email address' }}} label='Email address' errors={errors} register={register} placehoder='Enter your email'/>
+                <FormInput name='phone' validations={{required: {value: true, message: 'Phone number required*'}, pattern: { value: /^\+[1-9]{1,3}[0-9]{4,14}(?:x.+)?$/, message: 'Invalid phone number. phone number should be in the format +xxxxxxxxx' }}} label='Phone number' errors={errors} register={register} placehoder='Enter your phone number'/>
                 <div className="flex items-center justify-between">
                     <Button className='flex gap-1 items-center text-sm' type='button' variant={'ghost'} onClick={() =>setStep(step -1)}>&larr; Back</Button>
                     <Button className='flex gap-1 items-center'>Next &rarr;</Button>
