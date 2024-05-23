@@ -18,6 +18,7 @@ const LoginForm = () => {
         <CardWrapper title='Login'>
             <form className="flex flex-col gap-4" onSubmit={handleSubmit(save)}>
                 <FormInput name='email' type='email' validations={{required: {value: true, message: 'Email required*'}}} label='Email' errors={errors} register={register} placehoder='Enter email'/>
+                <div className="w-full flex justify-end"><Link className='block text-sm text-[#333] transition border-b border-b-transparent hover:border-b-black' href={'/auth/forgot-password'}>Forgot password?</Link></div>
                 <FormInput name='password' type='password' validations={{required: {value: true, message: 'Password required*'}}} label='Password' errors={errors} register={register} placehoder='Enter password'/>
                 <div className="flex items-center justify-between">
                     <div className="w-full flex items-center gap-1">
