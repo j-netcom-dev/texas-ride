@@ -32,7 +32,7 @@ const UserPasswordForm = ({step, setStep}: formPropTypes) => {
     return (
         <CardWrapper title='Create password'>
             <form className="flex flex-col gap-4" onSubmit={handleSubmit(save)}>
-                <FormInput name='password' type='password' validations={{required: {value: true, message: 'Password required*'}, pattern: {value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/, message: 'Password must be at least 8 characters long, and include uppercase, lowercase, number, and special character'}}} label='Password' errors={errors} register={register} placehoder='New password'/>
+                <FormInput name='password' type='password' validations={{required: {value: true, message: 'Password required*'}, pattern: {value: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*?&])[a-zA-Z0-9@$!%*?&]{8,}$/, message: 'Password must be at least 8 characters long, and include uppercase, lowercase, number, and special character'}}} label='Password' errors={errors} register={register} placehoder='New password'/>
                 <FormInput name='confirm' type='password' validations={{validate: (value:string) => value ==password || 'Passwords do not match'}} label='Confirm' errors={errors} register={register} placehoder='Confirm password'/>
                 <div className="flex items-center justify-between">
                     <Button className='flex gap-1 items-center text-sm' type='button' variant={'ghost'} onClick={() =>setStep(step -1)}>&larr; Back</Button>
