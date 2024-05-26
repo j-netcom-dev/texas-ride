@@ -29,8 +29,8 @@ const UserContact = ({step, setStep}: formPropTypes) => {
     return (
         <CardWrapper title='Contact details'>
             <form className="flex flex-col gap-4" onSubmit={handleSubmit(save)}>
-                <FormInput name='email' validations={{required: {value: true, message: 'Email required*'}, pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,message: 'Invalid email address' }}} label='Email address' errors={errors} register={register} placehoder='Enter your email'/>
-                <FormInput name='phone' validations={{required: {value: true, message: 'Phone number required*'}, pattern: { value: /^\+[1-9]{1,3}[0-9]{4,14}(?:x.+)?$/, message: 'Invalid phone number. phone number should be in the format +xxxxxxxxx' }}} label='Phone number' errors={errors} register={register} placehoder='Enter your phone number'/>
+                <FormInput name='email' validations={{required: {value: true, message: 'Email required*'}, pattern: { value: /^[a-zA-Z0-9\.\-]+@[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,}$/, message: 'Invalid email address' }}} label='Email address' errors={errors} register={register} placehoder='Enter your email'/>
+                <FormInput name='phone' validations={{required: {value: true, message: 'Phone number required*'}, pattern: { value:  /^\+[0-9]{1,3}\-[0-9]{9}$/, message: 'Invalid phone number. Example: +1-123456789' }}} label='Phone number' errors={errors} register={register} placehoder='Enter your phone number'/>
                 <div className="flex items-center justify-between">
                     <Button className='flex gap-1 items-center text-sm' type='button' variant={'ghost'} onClick={() =>setStep(step -1)}>&larr; Back</Button>
                     <Button className='flex gap-1 items-center'>Next &rarr;</Button>
