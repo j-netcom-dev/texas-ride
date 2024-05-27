@@ -1,12 +1,16 @@
 'use client'
 
-import React, { useEffect } from 'react';
-import { UserData } from '@/utils/types';
+import { toast } from "sonner";
 import CardWrapper from '../card-wrapper';
 import { useForm } from 'react-hook-form';
+import Loading from '@/components/Loading';
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import FormInput from '@/components/form-input';
+import { create_user } from '@/services/user-service';
+import { UserData, UserDetailsType } from '@/utils/types';
 import { destroy_user_details, get_user_details, save_user_data } from '@/utils/storage';
+import { ClientError } from "next-sanity";
 
 interface formPropTypes {
     step: number,
@@ -14,6 +18,7 @@ interface formPropTypes {
 }
 
 const UserPasswordForm = ({step, setStep}: formPropTypes) => {
+    const [loading, setLoading] =useState(false)
     const {handleSubmit, reset, register, watch, formState: {errors}, setValue} =useForm();
     let password =watch('password');
     useEffect(() =>{
@@ -22,11 +27,22 @@ const UserPasswordForm = ({step, setStep}: formPropTypes) => {
         [...Object.keys(user_details.data)].forEach(key =>setValue(key, user_details.data[key]))
     }, [step]);
 
-    const save = (data: any) =>{
-        save_user_data({step, data});
-        reset();
-        destroy_user_details();
-        setStep(step +1);
+    const save = async (values: any) =>{
+        setLoading(true);
+        save_user_data({step, data: {password: values.password}});
+        let details:UserDetailsType ={};
+        (get_user_details() as UserData[]).forEach(({data}) =>details ={...details, ...data});
+        try {
+            const user =await create_user(details);
+            
+            
+        } catch (error) { toast.error((error as ClientError).details.description);}
+        setLoading(false);
+        
+        
+        // reset();
+        // destroy_user_details();
+        // setStep(step +1);
     }
     
     return (
@@ -36,8 +52,9 @@ const UserPasswordForm = ({step, setStep}: formPropTypes) => {
                 <FormInput name='confirm' type='password' validations={{validate: (value:string) => value ==password || 'Passwords do not match'}} label='Confirm' errors={errors} register={register} placehoder='Confirm password'/>
                 <div className="flex items-center justify-between">
                     <Button className='flex gap-1 items-center text-sm' type='button' variant={'ghost'} onClick={() =>setStep(step -1)}>&larr; Back</Button>
-                    <Button className='flex gap-1 items-center'>Submit</Button>
+                    {loading? <Loading />: <Button className='flex gap-1 items-center'>Submit</Button>}
                 </div>
+                    
             </form>            
         </CardWrapper>
     )
