@@ -32,17 +32,14 @@ const UserPasswordForm = ({step, setStep}: formPropTypes) => {
         save_user_data({step, data: {password: values.password}});
         let details:UserDetailsType ={};
         (get_user_details() as UserData[]).forEach(({data}) =>details ={...details, ...data});
-        try {
-            const user =await create_user(details);
-            
-            
-        } catch (error) { toast.error((error as ClientError).details.description);}
+        try { 
+            await create_user(details); 
+            reset();
+            setLoading(false);
+            setStep(step +1);
+        } 
+        catch (error) { toast.error((error as ClientError).details.description);}
         setLoading(false);
-        
-        
-        // reset();
-        // destroy_user_details();
-        // setStep(step +1);
     }
     
     return (
