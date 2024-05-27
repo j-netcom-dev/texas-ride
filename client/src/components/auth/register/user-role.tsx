@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { UserData, UserRoleType } from "@/utils/types";
 import { get_user_roles } from "@/services/role-service";
 import { get_user_details, save_user_data } from "@/utils/storage";
+import Loading from "@/components/Loading";
 
 interface formPropTypes {
     step: number,
@@ -12,14 +13,18 @@ interface formPropTypes {
 }
 
 const UserRole = ({step, setStep}: formPropTypes) => {
+    const [isLoading, setIsLoading] =useState(false);
     const [role, setRole] =useState('');
     const [userRoles, setUserRoles] =useState<{value: string, label: string}[]>([]);
 
     useEffect(() =>{
         (async () =>{
-            const data =await get_user_roles() as UserRoleType[];
-            setUserRoles(data.map(({role, _id}) => ({value: _id, label: role.toLowerCase()})))
-            
+            setIsLoading(true);
+            try {
+                const data =await get_user_roles() as UserRoleType[];
+                setUserRoles(data.map(({role, _id}) => ({value: _id, label: role.toLowerCase()})))
+            } catch (error) {}
+            finally{setIsLoading(false);}
         })();
     }, [])
     
@@ -35,7 +40,7 @@ const UserRole = ({step, setStep}: formPropTypes) => {
         setRole('');
         setStep(step +1);
     }
-  return (
+  return isLoading? <Loading text="Initializing..."/>: (
     <div className="flex flex-col gap-8">
         <div className="flex gap-8">
         {userRoles.map(({value, label}) =>(<div key={value} className="shadow bg-[#fff]  rounded-xl flex flex-col gap-4 relative">
