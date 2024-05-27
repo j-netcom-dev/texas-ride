@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { UserData, UserRoleType } from "@/utils/types";
+import { get_user_roles } from "@/services/role-service";
 import { get_user_details, save_user_data } from "@/utils/storage";
-import { UserData } from "@/utils/types";
 
 interface formPropTypes {
     step: number,
@@ -12,7 +13,15 @@ interface formPropTypes {
 
 const UserRole = ({step, setStep}: formPropTypes) => {
     const [role, setRole] =useState('');
-    const userRoles =[{value: 'driver', label: 'Create a driver account'}, {value: 'rider', label: 'Create a rider account'}]
+    const [userRoles, setUserRoles] =useState<{value: string, label: string}[]>([]);
+
+    useEffect(() =>{
+        (async () =>{
+            const data =await get_user_roles() as UserRoleType[];
+            setUserRoles(data.map(({role, _id}) => ({value: _id, label: role.toLowerCase()})))
+            
+        })();
+    }, [])
     
     useEffect(() =>{
         const data =get_user_details(step) as UserData;
@@ -31,7 +40,7 @@ const UserRole = ({step, setStep}: formPropTypes) => {
         <div className="flex gap-8">
         {userRoles.map(({value, label}) =>(<div key={value} className="shadow bg-[#fff]  rounded-xl flex flex-col gap-4 relative">
             <div className="flex justify-end absolute top-4 left-0 right-4"><input checked ={role ==value} onChange={e =>setRole(e.target.value)} name='role' value={value} type="radio" className="cursor-pointer"/></div>
-            <p className="pt-16 pb-4 ps-4 pe-12 text-xl font-semibold">{label}</p>
+            <p className="pt-16 pb-4 ps-4 pe-12 text-xl font-semibold">{`Create a ${label} account`}</p>
         </div>))}
         </div>
         <Button className="w-max block ms-auto" onClick={save}>Next &rarr;</Button>
