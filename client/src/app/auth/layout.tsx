@@ -1,5 +1,6 @@
-import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { Toaster } from "sonner";
+import { Button } from "@/components/ui/button";
 
 export default function RootLayout({ children, }: { children: React.ReactNode }) {
   return (
@@ -10,6 +11,7 @@ export default function RootLayout({ children, }: { children: React.ReactNode })
     </div>
       <div className=" px-4 flex items-center justify-center ">
         {children}
+        <Toaster richColors />
       </div>
    </section>
   );
