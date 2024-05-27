@@ -11,12 +11,12 @@ const GMap = () => {
     };
     
     const center = {
-        lat: -3.745,
-        lng: -38.523
+        lat: 29.399983,
+        lng: -94.933851
     };
 
     const { isLoaded } = useJsApiLoader({
-        id: 'google-map-script',
+        id: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_ID,
         googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
       })
     
