@@ -1,59 +1,64 @@
 import { defineType } from 'sanity';
+import { UsersIcon } from '@sanity/icons';
 
-export const UserType =defineType({
-    name: 'user',
-    title: 'Users',
-    type: 'document',
-    fields: [
-        {
-            type: 'string',
-            name: 'first_name',
-            title: 'First Name',
-        },
-        {
-            type: 'string',
-            name: 'last_name',
-            title: 'Last Name',
-        },
-
-        {
-            name: 'email',
-            type: 'string',
-            title: 'Email',
-            options: { isUnique: true }
-        },
-
-        {
-            name: 'phone',
-            type: 'string',
-            title: 'Phone Number',
-            options: { isUnique: true }
-        },
-        {
-            name: 'role',
-            type: 'reference',
-            title: 'Role',
-            to: [
-                {type: 'role'}
-            ]
-        },
-        {
-            name: 'photo',
-            type: 'image',
-            title: 'Passport Photo',
-        },
-        {
-            type: 'string',
-            name: 'password',
-            title: 'Password',
-            hidden: true,
-        },
-
-        {
-            type: 'datetime',
-            name: 'emailVerifiedAt',
-            title: 'Time email was verified',
-            readOnly: true
-        }
-    ],
+export const UserType = defineType({
+  name: 'user',
+  title: 'Users',
+  icon: UsersIcon,
+  type: 'document',
+  fields: [
+    {
+      type: 'string',
+      name: 'first_name',
+      title: 'First Name',
+    },
+    {
+      type: 'string',
+      name: 'last_name',
+      title: 'Last Name',
+    },
+    {
+      name: 'email',
+      type: 'string',
+      title: 'Email',
+      options: { isUnique: true }
+    },
+    {
+      name: 'phone',
+      type: 'string',
+      title: 'Phone Number',
+      options: { isUnique: true }
+    },
+    {
+      name: 'role',
+      type: 'reference',
+      title: 'Role',
+      to: [
+        {type: 'role'}
+      ]
+    },
+    {
+      name: 'photo',
+      type: 'image',
+      title: 'Passport Photo',
+    },
+    {
+      type: 'string',
+      name: 'password',
+      title: 'Password',
+      hidden: true,
+    },
+    {
+      type: 'boolean',
+      name: 'active',
+      title: 'User Is Active',
+      readOnly: true
+    },
+    {
+      name: 'activation_tokens',
+      type: 'array',
+      title: 'Activation Tokens',
+      of: [{type: 'reference', to: {type: 'otp'}}]
+    }
+  ],
 });
