@@ -1,3 +1,4 @@
+import bcrypt from 'bcryptjs';
 import { groq } from "next-sanity";
 import { client } from "../lib/studio";
 import { UserDetailsType } from "@/utils/types";
@@ -9,6 +10,10 @@ export const get_users = async() =>{
 
     const data =await client.fetch(query);
     
+}
+
+export const encrypt_plain_text =async ({plain_text, salt}:{plain_text: string, salt: number}) =>{
+    return await bcrypt.hash(plain_text, salt);
 }
 
 const checkEmailExists = async (email: string): Promise<boolean> => {
@@ -29,11 +34,13 @@ export const create_user =async ({first_name, last_name, email, phone, role, pas
     const userPhoneExists =await checkPhonelExists(phone || '');
     if(userEmailExists) throw Error("User with email already exist");
     if(userPhoneExists) throw Error("User with phone number already exist");
+    const hashed_password =await encrypt_plain_text({plain_text: password || '', salt: 16});
+    
     const user = await client.create({
         _type: 'user',
         first_name,
         last_name,
-        password,
+        password: hashed_password,
         phone,
         email,
         role: {
