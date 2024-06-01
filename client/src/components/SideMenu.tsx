@@ -3,7 +3,7 @@
 import Image from "next/image";
 import IconLink from "./IconLink";
 import { Button } from "./ui/button";
-import LOGO from '@/assets/img/logo.jpg';
+import LOGO from '@/assets/img/logo.png';
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { Airplay, CarFront, CarTaxiFront, MenuIcon } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
