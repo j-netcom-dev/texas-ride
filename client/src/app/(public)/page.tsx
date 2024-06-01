@@ -1,8 +1,9 @@
 "use client";
 import Link from "next/link";
 import Image from "next/image";
-import CAR from '@/assets/img/car.png';
 import { motion } from 'framer-motion';
+import CAR from '@/assets/img/car.png';
+import CITY from '@/assets/img/city.png';
 import { Button } from "@/components/ui/button";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import StreetSection from "@/components/StreetSection";
@@ -38,14 +39,14 @@ export default function Home() {
         <motion.div variants={{
                         hidden: { x: '100%', opacity: 0 },
                         show: { x: 0, opacity: 1, transition: { type: 'spring', stiffness: 100, damping: 15, delay: .2 } }
-                      }} className="pb-5 md:pb-0 lg:px-6 flex-1 flex items-end"><Image src={CAR} alt="hero" className="w-full opacity-70"/>
+                      }} className="pb-5 md:pb-0 lg:px-6 flex-1 flex items-end"><Image src={CITY} alt="hero" className="w-full bg-blue-100 rounded-md shadow"/>
         </motion.div>
         <motion.div  variants={{
               hidden: { opacity: 0, y: 100 },
               show: { opacity: 1, y: 0, transition: { delay: .6, duration: .5, type: 'spring', damping: 15 } }
             }} className="flex-1">
           <h1 className="font-bold uppercase leading-[6rem] hidden md:block md:text-4xl lg:text-6xl">Ride in texas{isLarge &&<br/>}how you want</h1>
-          <p className="pb-4 lg:py-6 lg:max-w-[80%] mx-auto text-center md:text-left md:mx-0">Handpick your driver and schedule time for your. Alternatively book to ride later or even more conveniently call for an instant ride.</p>
+          <p className="pb-4 lg:py-6 lg:max-w-[80%] mx-auto text-center md:text-left md:mx-0">Handpick your driver and schedule time for your ride. Even better, book to ride later or even more conveniently call for an instant ride.</p>
         </motion.div>
       </motion.section>
       </main>
