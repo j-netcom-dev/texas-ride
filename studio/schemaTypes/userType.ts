@@ -58,7 +58,9 @@ export const UserType = defineType({
       name: 'activation_tokens',
       type: 'array',
       title: 'Activation Tokens',
-      of: [{type: 'reference', to: {type: 'otp'}}]
+      of: [{type: 'reference', to: {type: 'otp'}}],
+      hidden: true,
+      readOnly: true,
     }
   ],
 });
