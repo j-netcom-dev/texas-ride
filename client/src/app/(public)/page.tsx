@@ -30,7 +30,7 @@ export default function Home() {
             }} className="flex-1">
           <h1 className="font-bold uppercase leading-[4.5rem] hidden md:block md:text-4xl lg:text-6xl">Ride Like {isLarge &&<br/>}Never Before</h1>
           <p className="pb-4 lg:py-6 lg:max-w-[80%] mx-auto text-center md:text-left md:mx-0">Catch a royal ride and travel in style from any point to a destination you desire within Texas in time.</p>
-          <Button asChild className="mx-auto block text-center w-max md:mx-0"><Link href={''}>Start today</Link></Button>
+          <Button asChild className="mx-auto block text-center w-max md:mx-0"><Link href={'/auth/register'}>Start today</Link></Button>
         </motion.div>
       </motion.section>
     <StreetSection />
