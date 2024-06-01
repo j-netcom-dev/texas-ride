@@ -50,9 +50,15 @@ export const UserType = defineType({
     },
     {
       type: 'boolean',
+      initialValue: true,
+      name: 'access_allowed',
+      title: 'User Access Allowed'
+    },
+    {
+      type: 'boolean',
       name: 'active',
       title: 'User Is Active',
-      readOnly: true
+      initialValue: false,
     },
     {
       name: 'activation_tokens',
