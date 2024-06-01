@@ -13,7 +13,7 @@ interface formPropTypes {
 }
 
 const UserRole = ({step, setStep}: formPropTypes) => {
-    const [isLoading, setIsLoading] =useState(false);
+    const [isLoading, setIsLoading] =useState(true);
     const [role, setRole] =useState('');
     const [userRoles, setUserRoles] =useState<{value: string, label: string}[]>([]);
 
@@ -42,7 +42,7 @@ const UserRole = ({step, setStep}: formPropTypes) => {
     }
   return isLoading? <Loading text="Initializing..."/>: (
     <div className="flex flex-col gap-8">
-        <div className="flex gap-8">
+        <div className="flex flex-col md:flex-row gap-8">
         {userRoles.map(({value, label}) =>(<div key={value} className="shadow bg-[#fff]  rounded-xl flex flex-col gap-4 relative">
             <div className="flex justify-end absolute top-4 left-0 right-4"><input checked ={role ==value} onChange={e =>setRole(e.target.value)} name='role' value={value} type="radio" className="cursor-pointer"/></div>
             <p className="pt-16 pb-4 ps-4 pe-12 text-xl font-semibold">{`Create a ${label} account`}</p>
