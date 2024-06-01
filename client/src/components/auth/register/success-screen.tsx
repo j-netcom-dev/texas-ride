@@ -10,10 +10,13 @@ import { destroy_user_details, get_user_details } from '@/utils/storage';
 const Success = () => {
   const [email, setEmail] =useState<string>('');
   useEffect(() =>{
-    const { data } =get_user_details(2) as UserData;
+    const data =get_user_details(2) as UserData;
     if(!data) return;
-    setEmail((data.email || '').toString());
-    if(email) destroy_user_details();
+    
+    if(data.data.email) {
+      setEmail((data.data.email || '').toString());
+      destroy_user_details();
+    }
 }, []);
 
   return (
