@@ -2,6 +2,7 @@
 
 import { toast } from "sonner";
 import CardWrapper from '../card-wrapper';
+import { ClientError } from "next-sanity";
 import { useForm } from 'react-hook-form';
 import Loading from '@/components/Loading';
 import { useEffect, useState } from 'react';
@@ -9,8 +10,8 @@ import { Button } from '@/components/ui/button';
 import FormInput from '@/components/form-input';
 import { create_user } from '@/services/user-service';
 import { UserData, UserDetailsType } from '@/utils/types';
-import { destroy_user_details, get_user_details, save_user_data } from '@/utils/storage';
-import { ClientError } from "next-sanity";
+import { get_user_details, save_user_data } from '@/utils/storage';
+import { verifyEmail } from "@/services/email-verification-service";
 
 interface formPropTypes {
     step: number,
@@ -33,12 +34,15 @@ const UserPasswordForm = ({step, setStep}: formPropTypes) => {
         let details:UserDetailsType ={};
         (get_user_details() as UserData[]).forEach(({data}) =>details ={...details, ...data});
         try { 
-            await create_user(details); 
-            reset();
+            const { _id } =await create_user(details); 
+            await verifyEmail({to: details.email || '', name: `${details.first_name} ${details.last_name}`, _id});
             setLoading(false);
+            reset();
             setStep(step +1);
         } 
-        catch (error) { toast.error((error as ClientError).details.description);}
+        catch (error: unknown) {
+            toast.error(`${error}`);
+        }
         setLoading(false);
     }
     
