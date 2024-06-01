@@ -27,7 +27,6 @@ export async function POST(req: Request){
             subject: 'Email Verification',
             html: email_template
         });
-        console.log(info.messageId, info.accepted);
         
         return NextResponse.json({
             token,
@@ -35,8 +34,6 @@ export async function POST(req: Request){
         })
         
     } catch (error) {
-        console.log(error);
-        
         return NextResponse.json({
             message: 'Endpoint hit'
         })
