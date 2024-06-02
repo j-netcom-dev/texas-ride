@@ -2,7 +2,6 @@
 
 import { toast } from "sonner";
 import CardWrapper from '../card-wrapper';
-import { ClientError } from "next-sanity";
 import { useForm } from 'react-hook-form';
 import Loading from '@/components/Loading';
 import { useEffect, useState } from 'react';
@@ -26,7 +25,7 @@ const UserPasswordForm = ({step, setStep}: formPropTypes) => {
         const user_details =get_user_details(step) as UserData || undefined;
         if(!user_details) return;
         [...Object.keys(user_details.data)].forEach(key =>setValue(key, user_details.data[key]))
-    }, [step]);
+    }, [step, setValue]);
 
     const save = async (values: any) =>{
         setLoading(true);
@@ -36,14 +35,14 @@ const UserPasswordForm = ({step, setStep}: formPropTypes) => {
         try { 
             const { _id } =await create_user(details); 
             await verifyEmail({to: details.email || '', name: `${details.first_name} ${details.last_name}`, _id});
-            setLoading(false);
             reset();
             setStep(step +1);
         } 
         catch (error: unknown) {
             toast.error(`${error}`);
-        }
-        setLoading(false);
+            
+        } 
+        finally{ setLoading(false); }
     }
     
     return (
@@ -52,8 +51,10 @@ const UserPasswordForm = ({step, setStep}: formPropTypes) => {
                 <FormInput name='password' type='password' validations={{required: {value: true, message: 'Password required*'}, pattern: {value: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^\w\s])[a-zA-Z0-9\W]{8,}$/, message: 'Password must be at least 8 characters long, and include uppercase, lowercase, number, and special character'}}} label='Password' errors={errors} register={register} placehoder='New password'/>
                 <FormInput name='confirm' type='password' validations={{validate: (value:string) => value ==password || 'Passwords do not match'}} label='Confirm' errors={errors} register={register} placehoder='Confirm password'/>
                 <div className="flex items-center justify-between">
-                    <Button className='flex gap-1 items-center text-sm' type='button' variant={'ghost'} onClick={() =>setStep(step -1)}>&larr; Back</Button>
-                    {loading? <Loading />: <Button className='flex gap-1 items-center'>Submit</Button>}
+                    {loading?<div className="w-full flex justify-end items-center py-3"><Loading /></div>: <>
+                        <Button className='flex gap-1 items-center text-sm' type='button' variant={'ghost'} onClick={() =>setStep(step -1)}>&larr; Back</Button>
+                        <Button className='flex gap-1 items-center'>Submit</Button>
+                    </>}
                 </div>
                     
             </form>            
