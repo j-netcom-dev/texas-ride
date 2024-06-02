@@ -51,3 +51,14 @@ export const create_user =async ({first_name, last_name, email, phone, role, pas
 
    return {_id: user._id}
 }
+
+export const auth_user =async ({email, password}: {email:string, password: string}) =>{
+    const query = groq`*[_type == "user" && email == $email][0]{password, role, access_allowed, active}`;
+    const userFound = await client.fetch(query, { email });
+    if(!userFound) throw Error("Invalid  email or password");
+    const passwordMatch =await bcrypt.compare(password, userFound.password);
+    if(!passwordMatch) throw Error("Invalid  email or password");
+    if(!userFound.active) throw Error("Please activate your account and try again. Check your email for instructions.");
+    if(!userFound.access_allowed) throw Error("Access denied. Your account was temporarily suspended please contact us for further directions.");
+    
+}
