@@ -1,23 +1,21 @@
 'use client';
 
 import Link from 'next/link';
-import { PartyPopper, X } from 'lucide-react';
-import { useEffect, useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { destroy_user_details, get_user_details } from '@/utils/storage';
+import { useRouter } from 'next/router';
 import Loading from '@/components/Loading';
-import { useParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { PartyPopper, X } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { verify_token } from '@/services/verify-token';
 
-const Success = () => {
-  const params = useParams();
-  const [email, setEmail] =useState<string>('');
+const VerifyEmail = () => {
+  const router = useRouter();
   const [errorMessage, setErrorMessage] =useState('');
   const [isValidating, setIsValidating] =useState(true);
   useEffect(() => {
     try {
-        const userId =params['user-id'];
-        const token =params['verification-token'];
+        const userId =router.query['user-id'];
+        const token =router.query['verification-token'];
         (async () =>{
           if(token) {
             const result =await verify_token({token: `${token}`, userId: `${userId}`});
@@ -30,7 +28,7 @@ const Success = () => {
     }
    setIsValidating(false)
     
-  }, [params]);
+  }, [router]);
 
 
   return isValidating? <Loading text='Verifying token...' />: (
@@ -43,4 +41,14 @@ const Success = () => {
   )
 }
 
-export default Success;
+export default VerifyEmail;
+
+// for static export
+// export async function generateStaticParams() {
+//   const response = await fetch(`/api/verification-params`);
+//   const data = await response.json();
+
+//   return data.map(({ token, userId }:{ token: string, userId: string}) => ({
+//     params: { 'verification-token': token, 'user-id': userId },
+//   }));
+// }
