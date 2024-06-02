@@ -18,7 +18,7 @@ const UserContact = ({step, setStep}: formPropTypes) => {
         const user_details =get_user_details(step) as UserData || undefined;
         if(!user_details) return;
         [...Object.keys(user_details.data)].forEach(key =>setValue(key, user_details.data[key]))
-    }, [step]);
+    }, [step, setValue]);
 
     const save = (data: any) =>{
         save_user_data({step, data});
