@@ -5,7 +5,6 @@ export const verify_token = async({token, userId}: {token: string, userId: strin
         _id, created_at, activated_at, user { _ref}
     }`;
     const tokens =await client.fetch(query);
-    console.log(tokens);
     
     if(tokens.length){
         const currentuserToken =tokens.find((tkn: { user: { _ref: string; }; }) =>tkn.user._ref ==userId);
