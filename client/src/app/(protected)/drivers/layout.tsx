@@ -1,4 +1,9 @@
+import { Metadata } from "next";
 import SideMenu from "@/components/SideMenu";
+
+export const metadata: Metadata = {
+  title: "Dashboard",
+};
 
 export default function RootLayout({ children, }: { children: React.ReactNode }) {
     return (
