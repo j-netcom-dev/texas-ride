@@ -17,9 +17,9 @@ const SideMenu = () => {
   </div>
   <nav className="flex flex-col justify-between pb-12 pt-4">
     <div className="flex flex-col gap-2">
-      <IconLink href="/portal" text="Dashboard" icon={Airplay}/>
-      <IconLink href="/portal/trips" text="Trips" icon={CarTaxiFront}/>
-      <IconLink href="/portal/my-car" text="Car" icon={CarFront}/>
+      <IconLink href="/drivers" text="Dashboard" icon={Airplay}/>
+      <IconLink href="/drivers/trips" text="Trips" icon={CarTaxiFront}/>
+      <IconLink href="/drivers/my-car" text="Car" icon={CarFront}/>
     </div>
     <div className="px-4 flex flex-col gap-8">
       <div className="flex gap-2 items-center">
@@ -48,9 +48,9 @@ const SideMenu = () => {
             </div>
             <nav className="flex flex-col justify-between pb-12 pt-4">
               <div>
-              <IconLink href="/portal" text="Dashboard" icon={Airplay}/>
-              <IconLink href="/portal/trips" text="Trips" icon={CarTaxiFront}/>
-              <IconLink href="/portal/my-car" text="Car" icon={CarFront}/>
+              <IconLink href="/drivers" text="Dashboard" icon={Airplay}/>
+              <IconLink href="/drivers/trips" text="Trips" icon={CarTaxiFront}/>
+              <IconLink href="/drivers/my-car" text="Car" icon={CarFront}/>
               </div>
               <div className="px-4 flex flex-col gap-8">
                 <div className="flex gap-2 items-center">
