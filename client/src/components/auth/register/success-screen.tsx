@@ -20,7 +20,7 @@ const Success = () => {
 }, []);
 
   return (
-    <div className="bg-white  px-3 md:px-8 py-16 relative w-[400px] max-w-full flex flex-col gap-8 items-center shadow rounded-xl">
+    <div className="bg-white  px-3 md:px-8 py-4 md:py-16 relative w-[400px] max-w-full flex flex-col gap-8 items-center shadow rounded-xl">
         <div className="w-[75px] h-[75px] bg-green-400 rounded-full flex text-white items-center justify-center"><Check size={48}/></div>
         <h2 className='uppercase font-bold text-xl'>Thank you!</h2>
         <p className='text-center'>Your account was created successfully. Please check your email <b>{email}</b> within 24hrs for further instructions.</p>
