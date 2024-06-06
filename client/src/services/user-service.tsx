@@ -60,5 +60,5 @@ export const auth_user =async ({email, password}: {email:string, password: strin
     if(!passwordMatch) throw Error("Invalid  email or password");
     if(!userFound.active) throw Error("Please activate your account and try again. Check your email for instructions.");
     if(!userFound.access_allowed) throw Error("Access denied. Your account was temporarily suspended please contact us for further directions.");
-    
+    return userFound;
 }
