@@ -41,6 +41,7 @@ export const create_user =async ({first_name, last_name, email, phone, role, pas
         first_name,
         last_name,
         password: hashed_password,
+        access_allowed: true,
         phone,
         email,
         role: {
