@@ -2,14 +2,14 @@
 
 import Link from 'next/link';
 import { toast } from "sonner";
-import { useEffect, useState } from 'react';
 import Loading from '../Loading';
+import {signIn} from 'next-auth/react';
 import { useForm } from 'react-hook-form';
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import FormInput from '@/components/form-input';
-import CardWrapper from '@/components/auth/card-wrapper';
 import { auth_user } from '@/services/user-service';
-
+import CardWrapper from '@/components/auth/card-wrapper';
 
 
 const LoginForm = () => {
@@ -18,18 +18,13 @@ const LoginForm = () => {
     const save = async ({email, password}: {email?: string, password?: string}) =>{
         setLoading(true);
         try {
-            await auth_user({email: email || '', password: password|| ''});
-            
+            // await auth_user({email: email || '', password: password|| ''});
+            const res =await signIn("credentials",{email, password, redirect: false});
+            if (res?.status ==401) toast.error(`invalid email or password`);
         } catch (error: unknown) {
             toast.error(`${error}`);
-        }finally{ setLoading(false);}
+        } finally{ setLoading(false);}
     }
-    
-    useEffect(() =>{
-        (async () =>{
-            
-        })();
-    },[])
     return (
         <CardWrapper title='Login'>
             <form className="flex flex-col gap-4" onSubmit={handleSubmit(save)}>
