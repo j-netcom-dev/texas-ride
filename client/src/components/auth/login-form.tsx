@@ -5,10 +5,9 @@ import { toast } from "sonner";
 import Loading from '../Loading';
 import {signIn} from 'next-auth/react';
 import { useForm } from 'react-hook-form';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import FormInput from '@/components/form-input';
-import { auth_user } from '@/services/user-service';
 import CardWrapper from '@/components/auth/card-wrapper';
 
 
@@ -18,9 +17,10 @@ const LoginForm = () => {
     const save = async ({email, password}: {email?: string, password?: string}) =>{
         setLoading(true);
         try {
-            // await auth_user({email: email || '', password: password|| ''});
             const res =await signIn("credentials",{email, password, redirect: false});
-            if (res?.status ==401) toast.error(`invalid email or password`);
+            if (res?.status !=200) {
+                toast.error((res?.error || '').toString().toLowerCase());
+            }
         } catch (error: unknown) {
             toast.error(`${error}`);
         } finally{ setLoading(false);}
