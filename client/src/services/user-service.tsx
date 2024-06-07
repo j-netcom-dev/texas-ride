@@ -63,3 +63,10 @@ export const auth_user =async ({email, password}: {email:string, password: strin
     if(!userFound.access_allowed) throw Error("Access denied. Your account was temporarily suspended please contact us for further directions.");
     return userFound;
 }
+
+export const get_user_by_id = async (id: string) =>{
+    const query = groq`*[_type == "user" && _id == $id][0]`;
+    const userFound = await client.fetch(query, { id });
+    if(!userFound) throw Error("User not found");
+    return userFound;
+}
