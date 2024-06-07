@@ -3,28 +3,44 @@
 import Link from 'next/link';
 import { toast } from "sonner";
 import Loading from '../Loading';
-import {signIn} from 'next-auth/react';
 import { useForm } from 'react-hook-form';
-import { useState } from 'react';
+import {useEffect, useState} from 'react';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import FormInput from '@/components/form-input';
 import CardWrapper from '@/components/auth/card-wrapper';
-
+import { getSession, signIn, signOut } from 'next-auth/react';
 
 const LoginForm = () => {
+    const router =useRouter();
     const [loading, setLoading] =useState(false)
     const {handleSubmit, reset, register, formState: {errors}, } =useForm({});
+    const authenticate =async () =>{
+        const session =await getSession();
+        if(!session?.user){
+            toast.error('Authentication failed');
+            await signOut();
+        }else{
+            // @ts-ignore
+            const url =`/${session?.user?.role }s`.toLowerCase();
+            router.replace(url);
+        }
+    }
     const save = async ({email, password}: {email?: string, password?: string}) =>{
         setLoading(true);
         try {
             const res =await signIn("credentials",{email, password, redirect: false});
             if (res?.status !=200) {
                 toast.error((res?.error || '').toString().toLowerCase());
-            }
+            }else await authenticate();
         } catch (error: unknown) {
             toast.error(`${error}`);
         } finally{ setLoading(false);}
     }
+
+    useEffect(() =>{
+        authenticate().then();
+    }, []);
     return (
         <CardWrapper title='Login'>
             <form className="flex flex-col gap-4" onSubmit={handleSubmit(save)}>
