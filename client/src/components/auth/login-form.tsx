@@ -32,7 +32,10 @@ const LoginForm = () => {
             const res =await signIn("credentials",{email, password, redirect: false});
             if (res?.status !=200) {
                 toast.error((res?.error || '').toString().toLowerCase());
-            }else await authenticate();
+            }else {
+                await authenticate();
+                reset()
+            }
         } catch (error: unknown) {
             toast.error(`${error}`);
         } finally{ setLoading(false);}
