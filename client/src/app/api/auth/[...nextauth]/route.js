@@ -4,7 +4,8 @@ import {auth_user} from "../../../../services/user-service";
 
 async function login(credentials){
     const { email, password } =credentials;
-    return await auth_user({email, password});
+    const { _id, role: { role } } =await auth_user({email, password});
+    return {_id, role}
 }
 
 export const authOptions ={
@@ -21,20 +22,29 @@ export const authOptions ={
                 } catch ({message}) {
                     throw new Error(message);
                 }
+                finally {
+                    console.log('authorizing')
+                }
+
             }
         })
     ],
-    callback: {
+    session: {
+      strategy: 'jwt',
+    },
+    callbacks: {
         async jwt({token, user}){
+
             if(user){
-                token.email = user.email;
-                token.id = user._id;
+                token.role =user.role;
+                token.id =user._id;
             }
             return token;
         },
         async session({session, token}){
             if(token){
-                session.user.email = token.email;
+                session.user._id =token.id;
+                session.user.role =token.role;
             }
             return session;
         }
