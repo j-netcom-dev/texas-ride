@@ -1,4 +1,4 @@
-import { client } from "../lib/studio";
+import { client } from "@/lib/studio";
 
 export const verify_token = async({token, userId}: {token: string, userId: string}) =>{
     const query =`*[_type =='otp' && token == '${token}']{
