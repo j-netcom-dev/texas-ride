@@ -1,6 +1,6 @@
 import bcrypt from 'bcryptjs';
 import { groq } from "next-sanity";
-import { client } from "../lib/studio";
+import { client } from "@/lib/studio";
 import { UserDetailsType } from "@/utils/types";
 
 export const get_users = async() =>{
@@ -22,7 +22,7 @@ const checkEmailExists = async (email: string): Promise<boolean> => {
     return !!result;
   };
 
-  const checkPhonelExists = async (phone: string): Promise<boolean> => {
+  const checkPhoneExists = async (phone: string): Promise<boolean> => {
     const query = groq`*[_type == "user" && phone == $phone][0]{_id}`;
     const result = await client.fetch(query, { phone });
     return !!result;
@@ -31,7 +31,7 @@ const checkEmailExists = async (email: string): Promise<boolean> => {
 
 export const create_user =async ({first_name, last_name, email, phone, role, password}: UserDetailsType) =>{
     const userEmailExists =await checkEmailExists(email || '');
-    const userPhoneExists =await checkPhonelExists(phone || '');
+    const userPhoneExists =await checkPhoneExists(phone || '');
     if(userEmailExists) throw Error("User with email already exist");
     if(userPhoneExists) throw Error("User with phone number already exist");
     const hashed_password =await encrypt_plain_text({plain_text: password || '', salt: 16});
@@ -54,7 +54,7 @@ export const create_user =async ({first_name, last_name, email, phone, role, pas
 }
 
 export const auth_user =async ({email, password}: {email:string, password: string}) =>{
-    const query = groq`*[_type == "user" && email == $email][0]{password, role, access_allowed, active}`;
+    const query = groq`*[_type == "user" && email == $email][0]{password, role->{ role }, _id, access_allowed, active}`;
     const userFound = await client.fetch(query, { email });
     if(!userFound) throw Error("Invalid  email or password");
     const passwordMatch =await bcrypt.compare(password, userFound.password);
