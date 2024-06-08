@@ -9,7 +9,7 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import FormInput from '@/components/form-input';
 import CardWrapper from '@/components/auth/card-wrapper';
-import { getSession, signIn, signOut } from 'next-auth/react';
+import { getSession, signIn } from 'next-auth/react';
 
 const LoginForm = () => {
     const router =useRouter();
@@ -19,7 +19,6 @@ const LoginForm = () => {
         const session =await getSession();
         if(!session?.user){
             toast.error('Authentication failed');
-            await signOut();
         }else{
             // @ts-ignore
             const url =`/${session?.user?.role }s`.toLowerCase();
