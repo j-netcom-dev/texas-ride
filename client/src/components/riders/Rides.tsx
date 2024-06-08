@@ -24,7 +24,8 @@ const Rides =({title, query}: {title: string, query: {from?:string, to?:string, 
     useEffect(() => {
         (async () =>{
             if(Object.keys(query).length){
-                console.log(await search_rides(query));
+                const rides_matched =await search_rides(query) as RIDE_TYPE[];
+                setRides(rides_matched);
             }
         })();
     }, [title, query]);
