@@ -1,5 +1,5 @@
+import { client } from "@/lib/studio";
 import { UserRoleType } from "@/utils/types";
-import { client } from "../lib/studio";
 
 export const get_user_roles = async() =>{
 
@@ -7,6 +7,5 @@ export const get_user_roles = async() =>{
         _id, role
     }`;
 
-    const data =await client.fetch(query) as UserRoleType[];
-    return data;
+    return await client.fetch(query) as UserRoleType[];
 }
