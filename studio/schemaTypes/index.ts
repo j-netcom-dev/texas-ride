@@ -5,5 +5,6 @@ import { RoleType } from "./roleType";
 import { UserType } from "./userType";
 import { ModelType } from "./modelType";
 import { VehicleType } from "./VehicleType";
+import {ReviewsType} from "./reviewsType";
 
-export const schemaTypes = [RoleType, UserType, ModelType, MakeType, VehicleType, RideType, OTP, ]
+export const schemaTypes = [RoleType, UserType, ModelType, MakeType, VehicleType, RideType, OTP, ReviewsType]
