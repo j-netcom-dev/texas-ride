@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useSearchParams } from "next/navigation";
+import { useParams } from "next/navigation";
 import Loading from "@/components/Loading";
 import { useEffect, useState } from "react";
 import { PartyPopper, X } from "lucide-react";
@@ -11,27 +11,38 @@ import { verify_token } from "@/services/verify-token";
 
 const VerifyEmail = () => {
   const router = useRouter();
-  const searchParams = useSearchParams();
+  const params = useParams();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isValidating, setIsValidating] = useState(true);
 
   useEffect(() => {
-    const userId = searchParams.get("user-id");
-    const token = searchParams.get("verification-token");
+    const userId = params["user-id"] as string;
+    const token = params["verification-token"] as string;
+
+    // console.log("URL Params:", { userId, token });
 
     const verify = async () => {
       if (token && userId) {
-        const result = await verify_token({ token, userId });
-        if (result?.error) setErrorMessage(result?.error);
+        try {
+          const result = await verify_token({ token, userId });
+          // console.log("Verification Result:", result);
+          if (result?.error) {
+            setErrorMessage(result.error);
+          }
+        } catch (error) {
+          // console.error("Verification Error:", error);
+          setErrorMessage("An error occurred during verification.");
+        } finally {
+          setIsValidating(false);
+        }
+      } else {
+        setErrorMessage("Missing token or user ID.");
+        setIsValidating(false);
       }
-      setIsValidating(false);
     };
 
-    verify().catch((error) => {
-      setErrorMessage(`${error}`);
-      setIsValidating(false);
-    });
-  }, [searchParams]);
+    verify();
+  }, [params]);
 
   return isValidating ? (
     <Loading text="Verifying token..." />
