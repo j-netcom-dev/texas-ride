@@ -7,9 +7,13 @@ import {useParams}   from "next/navigation";
 import STARS from "@/assets/img/reviews.png";
 import { Button } from "@/components/ui/button";
 import ChatSidebar from "@/components/ChatSidebar";
-import { Star, MessageCircle } from "lucide-react";
-import {get_driver_rides, get_single_ride} from "@/services/rides-service";
+import {Star, MessageCircle, Phone, PhoneCall} from "lucide-react";
+import {book_ride, get_driver_rides, get_single_ride} from "@/services/rides-service";
 import {format_time} from "@/utils/format_time";
+import {getSession} from "next-auth/react";
+import {toast} from "sonner";
+import Loading from "@/components/Loading";
+import Link from "next/link";
 
 
 interface REVIEW {
@@ -20,17 +24,21 @@ interface REVIEW {
 
 const BookRide = () => {
   const params =useParams();
+  const [isLoading, setIsLoading] =useState(false);
   const [driver, setDriver] = useState<{
     first_name?: string;
     last_name?: string;
+    phone?: string,
     photo?: string;
   }>({});
   const [trip, setTrip] = useState<{
+    _id?: string,
     from?: string;
     to?: string;
     time?: string;
     status?: string;
   }>({});
+  const [userSession, setUserSession] =useState<Record<string, any>>({})
   const [avgRating, setAvgRating] =useState(0.0);
   const [reviews, setReviews] = useState<REVIEW[]>([]);
   const [isChatOpen, setIsChatOpen] = useState(false);
@@ -48,7 +56,6 @@ const BookRide = () => {
       });
       const ratings = data.filter(item => item.rating);
       setReviews(ratings);
-      console.log(ratings)
       // @ts-ignore
       const totalRating = ratings.reduce((sum, item) => sum + item.rating, 0);
       const clientAvgRatings = ratings.length > 0 ? (totalRating / ratings.length).toFixed(1) : 0;
@@ -57,8 +64,23 @@ const BookRide = () => {
       setDriver({...ride.driver});
     })();
   }, [params]);
+  useEffect(() => {
+    (async () =>{
+      const session =await getSession();
+      // @ts-ignore
+      setUserSession(session);
+    })();
+  }, []);
   const book =async () =>{
-
+      setIsLoading(true);
+      try {
+        await book_ride({rideId: trip?._id || '', customerId: userSession.user._id});
+        toast.success("Booking successful");
+      }catch (error){
+        // @ts-ignore
+        toast.error(error);
+      }
+    setIsLoading(false);
   }
   return (
     <div className={"h-full flex flex-col gap-8"}>
@@ -73,25 +95,36 @@ const BookRide = () => {
               <Image src={driver.photo || ''} alt={''} className={'w-full h-full'}/>
             </div>
             <div className={"flex flex-col gap-1"}>
-              <div className="flex gap-1">
-              {avgRating >0 ? (
-                  [ ...Array(Math.round(avgRating)), ].map((_, index) => (
-                      <Star size={14} className={"text-yellow-500"} key={index}/>
-                  ))) : (<span>No ratings</span> )}
-              </div>
               <h3 className={"font-semibold text-lg"}>
                 {driver?.first_name} {driver?.last_name}
               </h3>
+              <div className="flex gap-1">
+                {avgRating > 0 ? (
+                    <div className='flex gap-2 items-center'>
+                      <h3 className='font-semibold '>{avgRating}</h3>
+                      {
+                        [...Array(Math.round(avgRating)),].map((_, index) => (
+                            <Star size={14} className={"text-yellow-500"} key={index}/>
+                        ))
+                      }
+                    </div>
+                ) : <span>No rating</span>
+                }
+              </div>
+
             </div>
 
           </div>
-          {!trip.status &&<Button>Book</Button>}
+          {isLoading ? <Loading/> : (<div className='flex gap-2 w-full'>
+            {!trip.status && (<Button onClick={book}>Book</Button>)}
+            <Button variant={'link'} className={'bg-green-900 text-white'} asChild><Link href={`tel: ${driver?.phone}`}><PhoneCall size={12}/></Link></Button>
+          </div>)}
         </div>
       </div>
       <div className={"bg-white shadow rounded-lg flex flex-col p-8 gap-8"}>
         <h2 className={"uppercase text-xl font-semibold"}>Reviews</h2>
         {reviews.length ? (
-          <ul className={"flex flex-col gap-8"}>
+            <ul className={"flex flex-col gap-8"}>
             {reviews.map((review, index) => (
                 <li key={index} className={"flex flex-col"}>
                   <h3 className='uppercase font-semibold'>{review.name}</h3>

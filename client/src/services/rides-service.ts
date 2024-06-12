@@ -40,15 +40,27 @@ export const search_rides = async (searchQ: {from?: string, to?: string, date?: 
     return await client.fetch(q);
 
 }
-const book_ride =async ({rideId, customerId}: {rideId: string, customerId: string}) =>{
+export const book_ride =async ({rideId, customerId}: {rideId: string, customerId: string}) =>{
 
+    const booked_ride =await client.patch(rideId).set(
+        {
+            status:  'In Progress',
+            customer: {
+                _type: 'reference',
+                _ref: customerId,
+            },
+        }
+    ).commit();
+    console.log(booked_ride);
+    // return {ride_id,};
 }
+
 export const fetch_available_rides = async () =>{
     const query = groq`*[_type == "ride" && status ==null]{_id,  from, to, time, driver->{first_name, last_name, photo}}`;
     return await client.fetch(query);
 }
 
 export const get_single_ride = async (rideId: string) =>{
-    const query = groq`*[_type == "ride" && _id ==$rideId][0]{_id,  from, to, status, time, driver->{_id, first_name, last_name, photo}}`;
+    const query = groq`*[_type == "ride" && _id ==$rideId][0]{_id,  from, to, status, time, driver->{_id, first_name, last_name, photo, phone}}`;
     return await client.fetch(query, {rideId});
 }

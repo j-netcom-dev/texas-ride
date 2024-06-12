@@ -3,7 +3,6 @@ import { client } from "@/lib/studio";
 import {value} from "valibot";
 
 export  const create_vehicle =async (values: any) =>{
-    console.log(values)
     const vehicle = values?._id? await client.patch(
         values._id
     ).set(
