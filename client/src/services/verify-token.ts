@@ -43,7 +43,7 @@ export const verify_token = async ({
       }
 
       const transaction = client.transaction();
-      transaction.patch(userId, { set: { active: true, verified: true } }); // Ensure the user is marked as verified
+      transaction.patch(userId, { set: { active: true } }); // Ensure the user is marked as verified
       transaction.patch(_id, {
         set: { activated_at: new Date().toISOString() },
       });

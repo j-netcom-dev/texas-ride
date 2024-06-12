@@ -35,18 +35,11 @@ export const RideType =defineType({
             ]
         },
 
-        {
-            name: 'vehicle',
-            type: 'reference',
-            title: 'Vehicle',
-            to: [
-                {type: 'vehicle'}
-            ]
-        },
 
         {
             name: 'price',
             type: 'number',
+            initialValue: 0.0,
             title: 'Price'
         },
 
@@ -59,6 +52,7 @@ export const RideType =defineType({
         {
             name: 'status',
             type: 'string',
+            initialValue: 'New',
             title: 'Status'
         },
     ],

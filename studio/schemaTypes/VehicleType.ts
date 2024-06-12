@@ -19,20 +19,14 @@ export const VehicleType =defineType({
 
         {
             name: 'model',
-            type: 'reference',
+            type: 'string',
             title: 'Model',
-            to: [
-                {type: 'model'}
-            ]
         },
         
         {
             name: 'make',
-            type: 'reference',
+            type: 'string',
             title: 'Make',
-            to: [
-                {type: 'make'}
-            ]
         },
         {
             name: 'driver',

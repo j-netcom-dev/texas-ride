@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import SideMenu from "@/components/SideMenu";
+import {Toaster} from "sonner";
 
 export const metadata: Metadata = {
   title: "Dashboard",
@@ -11,6 +12,7 @@ export default function RootLayout({ children, }: { children: React.ReactNode })
         <SideMenu />
         <div></div>
           {children}
+         <Toaster richColors/>
      </div>
     );
   }

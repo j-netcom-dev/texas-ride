@@ -17,9 +17,7 @@ const LoginForm = () => {
     const {handleSubmit, reset, register, formState: {errors}, } =useForm({});
     const authenticate =async () =>{
         const session =await getSession();
-        if(!session?.user){
-            toast.error('Authentication failed');
-        }else{
+        if(session?.user){
             // @ts-ignore
             const url =`/${session?.user?.role }s`.toLowerCase();
             router.replace(url);

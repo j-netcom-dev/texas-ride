@@ -56,9 +56,9 @@ export const UserType = defineType({
     },
     {
       type: 'boolean',
-      name: 'active',
-      title: 'User Is Active',
       initialValue: false,
+      name: 'active',
+      title: 'User Activated'
     },
     {
       name: 'activation_tokens',
