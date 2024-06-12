@@ -7,7 +7,7 @@ import {useParams}   from "next/navigation";
 import STARS from "@/assets/img/reviews.png";
 import { Button } from "@/components/ui/button";
 import ChatSidebar from "@/components/ChatSidebar";
-import {Star, MessageCircle, Phone, PhoneCall} from "lucide-react";
+import {Star, MessageCircle, PhoneCall} from "lucide-react";
 import {book_ride, get_driver_rides, get_single_ride} from "@/services/rides-service";
 import {format_time} from "@/utils/format_time";
 import {getSession} from "next-auth/react";
@@ -26,6 +26,7 @@ const BookRide = () => {
   const params =useParams();
   const [isLoading, setIsLoading] =useState(false);
   const [driver, setDriver] = useState<{
+    _id?: string,
     first_name?: string;
     last_name?: string;
     phone?: string,
@@ -74,7 +75,7 @@ const BookRide = () => {
   const book =async () =>{
       setIsLoading(true);
       try {
-        await book_ride({rideId: trip?._id || '', customerId: userSession.user._id});
+        await book_ride({rideId: trip?._id || '', customerId: userSession.user._id, driver: driver?._id || ''});
         toast.success("Booking successful");
       }catch (error){
         // @ts-ignore

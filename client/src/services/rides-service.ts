@@ -1,5 +1,6 @@
 import {groq} from "next-sanity";
 import { client } from "@/lib/studio";
+import {push_notification} from "@/services/notification-service";
 
 
 export  const create_ride =async (values: any) =>{
@@ -40,7 +41,7 @@ export const search_rides = async (searchQ: {from?: string, to?: string, date?: 
     return await client.fetch(q);
 
 }
-export const book_ride =async ({rideId, customerId}: {rideId: string, customerId: string}) =>{
+export const book_ride =async ({rideId, customerId, driver}: {rideId: string, customerId: string, driver: string}) =>{
 
     const booked_ride =await client.patch(rideId).set(
         {
@@ -51,8 +52,9 @@ export const book_ride =async ({rideId, customerId}: {rideId: string, customerId
             },
         }
     ).commit();
-    console.log(booked_ride);
-    // return {ride_id,};
+    await push_notification({audience: driver, body: 'You have a new booking please check'});
+    // @ts-ignore
+    return {booked: booked_ride?._id}
 }
 
 export const fetch_available_rides = async () =>{
