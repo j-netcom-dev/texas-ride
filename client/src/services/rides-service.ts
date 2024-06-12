@@ -18,7 +18,7 @@ export  const create_ride =async (values: any) =>{
     return {ride: ride._id}
 }
 export const get_driver_rides =async (driver: {driver: string}) =>{
-    const query = `*[_type == "ride" && driver._ref == $driver]{
+    const query = groq`*[_type == "ride" && driver._ref == $driver]{
     _id,
     from,
     to,
@@ -30,7 +30,7 @@ export const get_driver_rides =async (driver: {driver: string}) =>{
       photo
     },
     "reviews": *[_type == "review" && references(^._id)][0]{
-      rating,
+      rating, review, customer->{ first_name, last_name, photo }
     }
   }`;
 
@@ -56,6 +56,6 @@ export const fetch_available_rides = async () =>{
 }
 
 export const get_single_ride = async (rideId: string) =>{
-    const query = groq`*[_type == "ride" && _id ==$rideId][0]{_id,  from, to, status, time, driver->{first_name, last_name, photo}}`;
+    const query = groq`*[_type == "ride" && _id ==$rideId][0]{_id,  from, to, status, time, driver->{_id, first_name, last_name, photo}}`;
     return await client.fetch(query, {rideId});
 }

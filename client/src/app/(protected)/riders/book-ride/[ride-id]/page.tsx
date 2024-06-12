@@ -8,7 +8,7 @@ import STARS from "@/assets/img/reviews.png";
 import { Button } from "@/components/ui/button";
 import ChatSidebar from "@/components/ChatSidebar";
 import { Star, MessageCircle } from "lucide-react";
-import {get_single_ride} from "@/services/rides-service";
+import {get_driver_rides, get_single_ride} from "@/services/rides-service";
 import {format_time} from "@/utils/format_time";
 
 
@@ -19,7 +19,7 @@ interface REVIEW {
 }
 
 const BookRide = () => {
-  const params =useParams()
+  const params =useParams();
   const [driver, setDriver] = useState<{
     first_name?: string;
     last_name?: string;
@@ -31,6 +31,7 @@ const BookRide = () => {
     time?: string;
     status?: string;
   }>({});
+  const [avgRating, setAvgRating] =useState(0.0);
   const [reviews, setReviews] = useState<REVIEW[]>([]);
   const [isChatOpen, setIsChatOpen] = useState(false);
   useEffect(() => {
@@ -38,6 +39,21 @@ const BookRide = () => {
       // @ts-ignore
       const ride =await get_single_ride(params['ride-id']);
       setTrip({...ride, time: format_time(ride?.time)});
+      const trips =await get_driver_rides(ride?.driver?._id);
+      const data = [...trips].map(entry => {
+        const _rating =entry?.reviews? entry?.reviews.rating || 0: 0;
+        const _review =entry?.reviews? entry?.reviews.review: '';
+        const _customer =entry?.reviews? `${entry?.reviews?.customer.first_name} ${entry?.reviews?.customer.last_name}`: '';
+        return { rating: _rating, name: _customer, review: _review}
+      });
+      const ratings = data.filter(item => item.rating);
+      setReviews(ratings);
+      console.log(ratings)
+      // @ts-ignore
+      const totalRating = ratings.reduce((sum, item) => sum + item.rating, 0);
+      const clientAvgRatings = ratings.length > 0 ? (totalRating / ratings.length).toFixed(1) : 0;
+      // @ts-ignore
+      setAvgRating(clientAvgRatings)
       setDriver({...ride.driver});
     })();
   }, [params]);
@@ -54,20 +70,12 @@ const BookRide = () => {
               <Image src={driver.photo || ''} alt={''} className={'w-full h-full'}/>
             </div>
             <div className={"flex flex-col gap-1"}>
-              {reviews.length ? (
-                  [
-                    ...Array(
-                        Math.round(
-                            reviews.reduce((sum, review) => sum + review.rating, 0) /
-                            reviews.length
-                        )
-                    ),
-                  ].map((_, index) => (
-                      <Star size={18} className={"text-yellow-500"} key={index}/>
-                  ))
-              ) : (
-                  <span>No rating</span>
-              )}
+              <div className="flex gap-1">
+              {avgRating >0 ? (
+                  [ ...Array(Math.round(avgRating)), ].map((_, index) => (
+                      <Star size={14} className={"text-yellow-500"} key={index}/>
+                  ))) : (<span>No ratings</span> )}
+              </div>
               <h3 className={"font-semibold text-lg"}>
                 {driver?.first_name} {driver?.last_name}
               </h3>
@@ -82,20 +90,26 @@ const BookRide = () => {
         {reviews.length ? (
           <ul className={"flex flex-col gap-8"}>
             {reviews.map((review, index) => (
-              <li key={index} className={"flex flex-col"}>
-                <p>{review.name}</p>
-                <p>{review.review}</p>
-              </li>
+                <li key={index} className={"flex flex-col"}>
+                  <h3 className='uppercase font-semibold'>{review.name}</h3>
+                  <div className="flex gap-1">
+                    {review.rating ? (
+                        [...Array(Math.round(review.rating)),].map((_, index) => (
+                            <Star size={14} className={"text-yellow-500"} key={index}/>
+                        ))) : (<span>No ratings</span>)}
+                  </div>
+                  <p>{review.review}</p>
+                </li>
             ))}
           </ul>
         ) : (
-          <div className={"flex justify-center items-center flex-col gap-8"}>
-            <Image
-              src={STARS}
-              alt={"ratings"}
-              className={"h-[250px] w-auto block"}
-            />
-            <span className={"text-muted-foreground"}>No reviews yet</span>
+            <div className={"flex justify-center items-center flex-col gap-8"}>
+              <Image
+                  src={STARS}
+                  alt={"ratings"}
+                  className={"h-[250px] w-auto block"}
+              />
+              <span className={"text-muted-foreground"}>No reviews yet</span>
           </div>
         )}
       </div>
