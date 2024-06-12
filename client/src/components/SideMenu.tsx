@@ -5,7 +5,7 @@ import IconLink from "./IconLink";
 import { Button } from "./ui/button";
 import LOGO from "@/assets/img/logo.png";
 import { useMediaQuery } from "@/hooks/use-media-query";
-import { Airplay, CarFront, CarTaxiFront, MenuIcon } from "lucide-react";
+import {Airplay, CarFront, CarTaxiFront, MenuIcon, MessageCircle} from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
 import {useEffect, useState} from "react";
@@ -37,6 +37,7 @@ const SideMenu = () => {
           <IconLink href="/drivers" text="Dashboard" icon={Airplay} />
           <IconLink href="/drivers/trips" text="Trips" icon={CarTaxiFront} />
           <IconLink href="/drivers/my-car" text="Car" icon={CarFront} />
+          <IconLink href="/drivers/charts" text="Chats" icon={MessageCircle} />
         </div>
         <div className="px-4 flex flex-col gap-8">
           <div className="flex gap-2 items-center">
@@ -77,12 +78,13 @@ const SideMenu = () => {
                 icon={CarTaxiFront}
               />
               <IconLink href="/drivers/my-car" text="Car" icon={CarFront} />
+              <IconLink href="/drivers/charts" text="Chats" icon={MessageCircle} />
             </div>
             <div className="px-4 flex flex-col gap-8">
               <div className="flex gap-2 items-center">
                 <Avatar>
-                  <AvatarImage src="https://github.com/shadcn.png" />
-                  <AvatarFallback>JD</AvatarFallback>
+                  <AvatarImage src={image} />
+                  <AvatarFallback>{initials}</AvatarFallback>
                 </Avatar>
                 <div className="flex flex-col">
                   <h3 className="font-semibold text-[1rem] uppercase">

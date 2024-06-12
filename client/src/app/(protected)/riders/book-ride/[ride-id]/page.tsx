@@ -57,6 +57,9 @@ const BookRide = () => {
       setDriver({...ride.driver});
     })();
   }, [params]);
+  const book =async () =>{
+
+  }
   return (
     <div className={"h-full flex flex-col gap-8"}>
       <div className={"bg-white p-4 rounded shadow flex flex-col"}>

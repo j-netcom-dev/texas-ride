@@ -18,17 +18,8 @@ export  const create_ride =async (values: any) =>{
     return {ride: ride._id}
 }
 export const get_driver_rides =async (driver: {driver: string}) =>{
-    const query = groq`*[_type == "ride" && driver._ref == $driver]{
-    _id,
-    from,
-    to,
-    time,
-    driver->{
-      _id,
-      firstName,
-      lastName,
-      photo
-    },
+    const query = groq`*[_type == "ride" && driver._ref == $driver]{ _id, from, to, time,
+    driver->{ _id, firstName, lastName, photo },
     "reviews": *[_type == "review" && references(^._id)][0]{
       rating, review, customer->{ first_name, last_name, photo }
     }
@@ -49,7 +40,9 @@ export const search_rides = async (searchQ: {from?: string, to?: string, date?: 
     return await client.fetch(q);
 
 }
+const book_ride =async ({rideId, customerId}: {rideId: string, customerId: string}) =>{
 
+}
 export const fetch_available_rides = async () =>{
     const query = groq`*[_type == "ride" && status ==null]{_id,  from, to, time, driver->{first_name, last_name, photo}}`;
     return await client.fetch(query);
