@@ -7,13 +7,14 @@ import DataTable from '@/components/DataTable';
 import FormInput from '@/components/form-input';
 import { Button } from '@/components/ui/button';
 import { useForm } from 'react-hook-form';
-import {create_ride, get_driver_rides} from "@/services/rides-service";
+import {create_ride, fetch_requested_rides, get_driver_rides} from "@/services/rides-service";
 import {getSession} from "next-auth/react";
 import { CalendarClock, CarFront, CircleCheckBig, Plus, X } from 'lucide-react';
 import {useEffect, useState} from "react";
 import Loading from "@/components/Loading";
 
 const Trips = () => {
+  const [requested, setRequested] =useState([]);
   const {handleSubmit, reset, register, formState: {errors}, } =useForm({});
   const [isLoading, setIsLoading] =useState(false);
   const [newTrip, setNewTrip] =useState<Record<string, any>>({});
@@ -42,7 +43,16 @@ const Trips = () => {
       const session =await getSession();
       // @ts-ignore
       const entries =await get_driver_rides(session?.user?._id || '');
+      const ride_requests =await fetch_requested_rides();
       const data =[...entries].map(entry =>{
+        const _from =entry?.from;
+        const _to =entry?.to;
+        const _time =entry?.time;
+        const _customer = '-';
+        const _status =entry?.status;
+        return {from: _from, to: _to, time: _time, customer: _customer, status: _status}
+      });
+      const requested_customer_rides =[...ride_requests].map(entry =>{
         const _from =entry?.from;
         const _to =entry?.to;
         const _time =entry?.time;
@@ -53,9 +63,9 @@ const Trips = () => {
       setTotal(data.length)
       // @ts-ignore
       setNew([...data].filter(item =>!item?.status).length);
-      setScheduled([...data].filter(item =>item?.status =='Scheduled').length);
-      setCompleted([...data].filter(item =>item?.status =='Completed').length);
-      setCancelled([...data].filter(item =>item?.status =='Cancelled').length);
+      setScheduled([...data].filter(item =>item?.status.toLowerCase() =='in progress').length);
+      setCompleted([...data].filter(item =>item?.status.toLowerCase() =='completed').length);
+      setCancelled([...data].filter(item =>item?.status.toLowerCase() =='cancelled').length);
       // @ts-ignore
       setTrips(data);
     })();
@@ -84,6 +94,9 @@ const Trips = () => {
               {isLoading? <Loading />: <Button>Create</Button>}
             </div>
           </form>
+        </GridItem>
+        <GridItem title={(trips && trips.length)? 'Ride Requests': ''} title_alignment='left'>
+          {(trips && trips.length)? <DataTable trips ={trips}/>:<div>No requests yet</div>}
         </GridItem>
         <GridItem title={(trips && trips.length)? 'My Trips': ''} title_alignment='left'>{(trips && trips.length)? <DataTable trips ={trips}/>:<div>No trips yet</div>}</GridItem>
       </div>

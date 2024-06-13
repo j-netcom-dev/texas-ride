@@ -21,6 +21,7 @@ export  const create_ride =async (values: any) =>{
 export const get_driver_rides =async (driver: {driver: string}) =>{
     const query = groq`*[_type == "ride" && driver._ref == $driver]{ _id, from, to, time,
     driver->{ _id, firstName, lastName, photo },
+    customer->{ _id, firstName, lastName },
     "reviews": *[_type == "review" && references(^._id)][0]{
       rating, review, customer->{ first_name, last_name, photo }
     }
@@ -62,7 +63,27 @@ export const fetch_available_rides = async () =>{
     return await client.fetch(query);
 }
 
+export const fetch_requested_rides = async () =>{
+    const query = groq`*[_type == "ride" && status ==null]{_id,  from, to, time, customer->{first_name, last_name, photo}}`;
+    return await client.fetch(query);
+}
+
 export const get_single_ride = async (rideId: string) =>{
     const query = groq`*[_type == "ride" && _id ==$rideId][0]{_id,  from, to, status, time, driver->{_id, first_name, last_name, photo, phone}}`;
     return await client.fetch(query, {rideId});
+}
+
+export const request_ride =async (values: any) =>{
+    const datetime =new Date(`${values?.date}T${values?.time}Z`).toISOString();
+    const ride = await client.create({
+        _type: 'ride',
+        from: values?.from,
+        to: values?.to,
+        time: datetime,
+        customer: {
+            _type: 'reference',
+            _ref: values?.customer,
+        },
+    });
+    return {ride: ride._id}
 }

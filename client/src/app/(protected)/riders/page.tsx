@@ -6,6 +6,10 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Rides from "@/components/riders/Rides";
 import { getGeoPositionName } from "@/services/geo-service";
+import {getSession} from "next-auth/react";
+import {toast} from "sonner";
+import {request_ride} from "@/services/rides-service";
+import Loading from "@/components/Loading";
 
 interface Query {
   from?: string;
@@ -15,6 +19,7 @@ interface Query {
 }
 
 const Riders: React.FC = () => {
+  const [isLoading, setIsLoading] =useState(false);
   const [q, setQ] = useState<Query>({});
   const [query, setQuery] = useState<Query>({});
   const [title, setTitle] = useState("Pre-Scheduled rides");
@@ -50,10 +55,22 @@ const Riders: React.FC = () => {
           }
         }
       };
-      getNameFromCoords();
+      getNameFromCoords().then();
     }
   }, [coordinates, currentMode]);
-
+  const requestRide =async () =>{
+    setIsLoading(true);
+    try {
+      if(!Object.keys(q).length) return;
+      const session =await getSession();
+      // @ts-ignore
+      await request_ride({...q, customer: session?.user?._id});
+      toast.success("Ride request sent successfully.");
+    }catch(error:any){
+      toast.error(error);
+    }
+    setIsLoading(false);
+  }
   return (
     <div className="grid lg:grid-rows-[500px_auto] min-h-screen gap-8">
       <div className="grid lg:grid-cols-[30%_auto] gap-8">
@@ -95,15 +112,18 @@ const Riders: React.FC = () => {
                   />
                 </div>
               </div>
-              <Button
-                onClick={() => {
-                  setQuery(q);
-                  setTitle(
-                    `Rides ${q?.to ? "to " + q?.to : q?.from ? "from " + q?.from : "found"}`
-                  );
-                }}>
-                Search
-              </Button>
+              {isLoading? <Loading /> :<div className='flex gap-4'>
+                <Button className={'flex-1 d-block'}
+                        onClick={() => {
+                          setQuery(q);
+                          setTitle(
+                              `Rides ${q?.to ? "to " + q?.to : q?.from ? "from " + q?.from : "found"}`
+                          );
+                        }}>
+                  Search
+                </Button>
+                <Button className={'flex-1 d-block'} onClick={requestRide}>Request</Button>
+              </div>}
             </div>
           </div>
         </div>
