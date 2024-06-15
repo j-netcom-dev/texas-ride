@@ -3,7 +3,7 @@ import {Button} from "@/components/ui/button";
 import {Bell, BellOff} from "lucide-react";
 import {useEffect, useState} from "react";
 import {getSession} from "next-auth/react";
-import {get_user_notifications} from "@/services/notification-service";
+import {get_user_notifications, read_notification} from "@/services/notification-service";
 
 
 interface NOTIFICATION {
@@ -21,7 +21,7 @@ const TopBar = ({page}: TopBarPropTypes) => {
         try {
             const unread =notifications.filter(notification=> notification._id !== id);
             setNotifications(unread);
-            await readNotification({id});
+            await read_notification({_id: id});
         }catch(e){}
     }
     useEffect(() => {

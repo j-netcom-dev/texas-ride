@@ -61,11 +61,12 @@ const Trips = () => {
         return {from: _from, to: _to, time: _time, customer: _customer, status: _status}
       });
       setTotal(data.length)
+      console.log(data)
       // @ts-ignore
       setNew([...data].filter(item =>!item?.status).length);
-      setScheduled([...data].filter(item =>item?.status.toLowerCase() =='in progress').length);
-      setCompleted([...data].filter(item =>item?.status.toLowerCase() =='completed').length);
-      setCancelled([...data].filter(item =>item?.status.toLowerCase() =='cancelled').length);
+      setScheduled([...data].filter(item =>item.status && item.status.toLowerCase() =='in progress').length);
+      setCompleted([...data].filter(item =>item.status && item.status.toLowerCase() =='completed').length);
+      setCancelled([...data].filter(item =>item.status && item.status.toLowerCase() =='cancelled').length);
       // @ts-ignore
       setTrips(data);
     })();
