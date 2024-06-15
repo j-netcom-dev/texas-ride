@@ -70,3 +70,13 @@ export const get_user_by_id = async (id: string) =>{
     if(!userFound) throw Error("User not found");
     return userFound;
 }
+
+export const get_user_by_email = async ({email}: { email: string }) => {
+    const query = groq`*[_type == "user" && email == $email][0]{_id, active, access_allowed}`;
+    return await client.fetch(query, { email });
+};
+
+export const change_password = async ({userId, password}: { userId: string, password: string }) => {
+    const hashed_password =await encrypt_plain_text({plain_text: password || '', salt: 16});
+    await client.patch(userId).set( { password: hashed_password }).commit();
+};
