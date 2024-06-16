@@ -44,6 +44,7 @@ const Trips = () => {
   useEffect(() => {
     (async () =>{
       const session =await getSession();
+      console.log(session)
       // @ts-ignore
       const entries =await get_driver_rides(session?.user?._id || '');
       const ride_requests =await fetch_requested_rides();

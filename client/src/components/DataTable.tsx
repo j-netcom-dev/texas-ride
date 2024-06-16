@@ -1,14 +1,14 @@
 'use client';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import {Button} from "@/components/ui/button";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 
-const DataTable = ({trips, actions =[]}: {actions?: {label: string, action?: any, condition?: string[], theme?: string}[], trips: {_id?: string, customer?: string, from?: string, to?: string, time?: string, status?: string}[] }) => {
+const DataTable = ({trips, actions =[], user_role ='DRIVER'}: {user_role?:string, actions?: {label: string, action?: any, condition?: string[], theme?: string}[], trips: {_id?: string, customer?: string, driver?: string, from?: string, to?: string, time?: string, status?: string}[] }) => {
 
   return (
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead>Customer</TableHead>
+          <TableHead>{user_role == 'DRIVER'? 'Customer': 'Driver'}</TableHead>
           <TableHead>From</TableHead>
           <TableHead>To</TableHead>
             <TableHead>Time</TableHead>
@@ -19,7 +19,7 @@ const DataTable = ({trips, actions =[]}: {actions?: {label: string, action?: any
       <TableBody>
         {trips.map(trip => (
           <TableRow key={trip?._id}>
-            <TableCell className="font-medium">{trip?.customer}</TableCell>
+            <TableCell className="font-medium">{trip?.customer || trip?.driver}</TableCell>
             <TableCell>{trip?.from}</TableCell>
             <TableCell>{trip?.to}</TableCell>
               <TableCell>{trip?.time}</TableCell>

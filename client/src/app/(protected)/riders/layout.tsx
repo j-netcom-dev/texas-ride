@@ -19,8 +19,6 @@ export default function RootLayout({ children, }: { children: React.ReactNode })
               <Links />
               <TopBar/>
           </div>
-
-
       </div>
       {children}
          <Toaster richColors/>

@@ -31,6 +31,12 @@ const params = { driver };
 return await client.fetch(query, params);
 
 }
+
+export const get_client_rides =async (customer: string) => {
+    const query = groq`*[_type =='ride' && customer._ref ==$customer] { _id, from, to, time, status, driver->{ first_name, last_name }}`;
+    return await client.fetch(query, {customer});
+
+}
 export const search_rides = async (searchQ: {from?: string, to?: string, date?: string, time?:string}) => {
     const query =[];
     if(searchQ.to) query.push(`to match '${searchQ.to}'`);
