@@ -101,3 +101,15 @@ export const update_ride_status = async ({status, rideId}:{rideId: string, statu
     const booked_ride =await client.patch(rideId).set( {status}).commit();
     return {booked: booked_ride?._id}
 }
+
+export const accept_ride = async ({driver, rideId}:{rideId: string, driver: string}) =>{
+
+    const accepted_ride =await client.patch(rideId).set( {
+        status: 'Scheduled',
+        driver: {
+            _type: 'reference',
+            _ref: driver,
+        },
+    }).commit();
+    return {accepted: accepted_ride?._id}
+}

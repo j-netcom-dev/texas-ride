@@ -7,7 +7,13 @@ import DataTable from '@/components/DataTable';
 import FormInput from '@/components/form-input';
 import { Button } from '@/components/ui/button';
 import { useForm } from 'react-hook-form';
-import {create_ride, fetch_requested_rides, get_driver_rides, update_ride_status} from "@/services/rides-service";
+import {
+  accept_ride,
+  create_ride,
+  fetch_requested_rides,
+  get_driver_rides,
+  update_ride_status
+} from "@/services/rides-service";
 import {getSession} from "next-auth/react";
 import { CalendarClock, CarFront, CircleCheckBig, Plus, X } from 'lucide-react';
 import {useEffect, useState} from "react";
@@ -16,6 +22,7 @@ import {format_time} from "@/utils/format_time";
 import {toast} from "sonner";
 
 const Trips = () => {
+  const [userId, setUserId] =useState<string>();
   const [isProcessing, setIsProcessing] = useState(false);
   const [requested, setRequested] =useState([]);
   const {handleSubmit, reset, register, formState: {errors}, } =useForm({});
@@ -44,7 +51,8 @@ const Trips = () => {
   useEffect(() => {
     (async () =>{
       const session =await getSession();
-      console.log(session)
+      // @ts-ignore
+      setUserId(session?.user?._id || '');
       // @ts-ignore
       const entries =await get_driver_rides(session?.user?._id || '');
       const ride_requests =await fetch_requested_rides();
@@ -60,6 +68,7 @@ const Trips = () => {
         return {_id, from: _from, to: _to, time: _time, customer: _customer, status: _status}
       });
       const requested_customer_rides =[...ride_requests].map(entry =>{
+        const _id =entry?._id;
         const _from =entry?.from;
         const _to =entry?.to;
         const _time =format_time(entry?.time);
@@ -67,7 +76,7 @@ const Trips = () => {
         const customer_last_name =entry?.customer?.last_name;
         const _customer = customer_first_name || customer_last_name? `${customer_first_name || ''} ${customer_last_name || ''}`: '-';
         const _status =entry?.status;
-        return {from: _from, to: _to, time: _time, customer: _customer, status: _status}
+        return {from: _from, to: _to, time: _time, customer: _customer, status: _status, _id}
       });
       // @ts-ignore
       setRequested(requested_customer_rides)
@@ -81,6 +90,7 @@ const Trips = () => {
       setTrips(data);
     })();
   }, [newTrip]);
+
   const updateRideStatus =async (values: {rideId: string, status:string}) =>{
     try {
       const trip =await update_ride_status(values);
@@ -91,6 +101,18 @@ const Trips = () => {
       toast.error(`${error}`);
     }
   }
+
+  const acceptRide =async (values: {rideId: string }) =>{
+    try {
+      const trip =await accept_ride({rideId: values.rideId, driver: userId || ''});
+      setNewTrip(trip);
+      toast.success(`Trip added to your list successfully`);
+    }
+    catch(error){
+      toast.error(`${error}`);
+    }
+  }
+
   const my_rides_actions =[
     {label: 'Start', isLoading: isProcessing,  action: (rideId: string) =>updateRideStatus({rideId, status: 'In Progress'}), condition: ['scheduled'], theme: 'bg-blue-500'},
     {label: 'Cancel', isLoading: isProcessing, action: (rideId: string) =>updateRideStatus({rideId, status: 'Cancelled'}), condition: ['', 'scheduled', 'in progress'], theme: 'bg-red-500'},
@@ -98,7 +120,7 @@ const Trips = () => {
   ];
 
   const user_rides_actions =[
-    {label: 'Accept', action: () =>{}, condition: [''], theme: 'bg-green-500'},
+    {label: 'Accept', action: (rideId:string) =>acceptRide({rideId}), condition: [''], theme: 'bg-green-500'},
   ];
 
   return (
