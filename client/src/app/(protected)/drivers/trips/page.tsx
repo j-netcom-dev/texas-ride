@@ -7,13 +7,16 @@ import DataTable from '@/components/DataTable';
 import FormInput from '@/components/form-input';
 import { Button } from '@/components/ui/button';
 import { useForm } from 'react-hook-form';
-import {create_ride, fetch_requested_rides, get_driver_rides} from "@/services/rides-service";
+import {create_ride, fetch_requested_rides, get_driver_rides, update_ride_status} from "@/services/rides-service";
 import {getSession} from "next-auth/react";
 import { CalendarClock, CarFront, CircleCheckBig, Plus, X } from 'lucide-react';
 import {useEffect, useState} from "react";
 import Loading from "@/components/Loading";
+import {format_time} from "@/utils/format_time";
+import {toast} from "sonner";
 
 const Trips = () => {
+  const [isProcessing, setIsProcessing] = useState(false);
   const [requested, setRequested] =useState([]);
   const {handleSubmit, reset, register, formState: {errors}, } =useForm({});
   const [isLoading, setIsLoading] =useState(false);
@@ -45,19 +48,20 @@ const Trips = () => {
       const entries =await get_driver_rides(session?.user?._id || '');
       const ride_requests =await fetch_requested_rides();
       const data =[...entries].map(entry =>{
-        const _from =entry?.from;
+        const _id =entry?._id
         const _to =entry?.to;
-        const _time =entry?.time;
-        const customer_first_name =entry?.customer?.first_name;
-        const customer_last_name =entry?.customer?.last_name;
-        const _customer = customer_first_name || customer_last_name? `${customer_first_name || ''} ${customer_last_name || ''}`: '-';
+        const _from =entry?.from;
         const _status =entry?.status;
-        return {from: _from, to: _to, time: _time, customer: _customer, status: _status}
+        const _time =format_time(entry?.time);
+        const customer_last_name =entry?.customer?.last_name;
+        const customer_first_name =entry?.customer?.first_name;
+        const _customer = customer_first_name || customer_last_name? `${customer_first_name || ''} ${customer_last_name || ''}`: '-';
+        return {_id, from: _from, to: _to, time: _time, customer: _customer, status: _status}
       });
       const requested_customer_rides =[...ride_requests].map(entry =>{
         const _from =entry?.from;
         const _to =entry?.to;
-        const _time =entry?.time;
+        const _time =format_time(entry?.time);
         const customer_first_name =entry?.customer?.first_name;
         const customer_last_name =entry?.customer?.last_name;
         const _customer = customer_first_name || customer_last_name? `${customer_first_name || ''} ${customer_last_name || ''}`: '-';
@@ -76,6 +80,25 @@ const Trips = () => {
       setTrips(data);
     })();
   }, [newTrip]);
+  const updateRideStatus =async (values: {rideId: string, status:string}) =>{
+    try {
+      const trip =await update_ride_status(values);
+      setNewTrip(trip);
+      toast.success(`Trip updated successfully`);
+    }
+    catch(error){
+      toast.error(`${error}`);
+    }
+  }
+  const my_rides_actions =[
+    {label: 'Start', isLoading: isProcessing,  action: (rideId: string) =>updateRideStatus({rideId, status: 'In Progress'}), condition: ['scheduled'], theme: 'bg-blue-500'},
+    {label: 'Cancel', isLoading: isProcessing, action: (rideId: string) =>updateRideStatus({rideId, status: 'Cancelled'}), condition: ['', 'scheduled', 'in progress'], theme: 'bg-red-500'},
+    {label: 'Complete',isLoading: isProcessing,  action: (rideId: string) =>updateRideStatus({rideId, status: 'Completed'}), condition: ['in progress'], theme: 'bg-green-500'},
+  ];
+
+  const user_rides_actions =[
+    {label: 'Accept', action: () =>{}, condition: [''], theme: 'bg-green-500'},
+  ];
 
   return (
     <main className='grid grid-rows-[max-content_auto] p-4 gap-8 bg-[#dcdee0bb]'>
@@ -103,9 +126,9 @@ const Trips = () => {
           </form>
         </GridItem>
         <GridItem title={(requested && requested.length)? 'Ride Requests': ''} title_alignment='left' justify={`${requested.length?'justify-start': 'justify-center'}`}>
-          {(requested && requested.length)? <DataTable trips ={requested}/>:<div>No ride requests yet</div>}
+          {(requested && requested.length)? <DataTable actions={user_rides_actions} trips ={requested}/>:<div>No ride requests yet</div>}
         </GridItem>
-        <GridItem title={(trips && trips.length)? 'My Trips': ''} title_alignment='left' justify={`${trips.length?'justify-start': 'justify-center'}`}>{(trips && trips.length)? <DataTable trips ={trips}/>:<div>No trips yet</div>}</GridItem>
+        <GridItem title={(trips && trips.length)? 'My Trips': ''} title_alignment='left' justify={`${trips.length?'justify-start': 'justify-center'}`}>{(trips && trips.length)? <DataTable actions={my_rides_actions} trips ={trips}/>:<div>No trips yet</div>}</GridItem>
       </div>
     </main>
   )

@@ -9,12 +9,14 @@ import DataTable from '@/components/DataTable';
 import {get_driver_rides} from "@/services/rides-service";
 import BarChartComponent from "@/components/charts/BarChart";
 import { Boxes, CarFront, CircleCheckBig, Star } from 'lucide-react';
+import {format_time} from "@/utils/format_time";
 
-const Portal = () => {
+const Dashboard = () => {
   const [clientRating, setClientRating] =useState(0.0)
   const [completed, setCompleted] =useState(0)
   const [trips, setTrips] =useState([]);
   const [dailyRides, setDailyRides] =useState([]);
+
   useEffect(() => {
     (async () => {
       let session = await getSession();
@@ -23,7 +25,7 @@ const Portal = () => {
       const data = [...driver_trips].map(entry => {
         const _from = entry?.from;
         const _to = entry?.to;
-        const _time = entry?.time;
+        const _time = format_time(entry?.time);
         const customer_first_name =entry?.customer?.first_name;
         const customer_last_name =entry?.customer?.last_name;
         const _customer = customer_first_name || customer_last_name? `${customer_first_name || ''} ${customer_last_name || ''}`: '-';
@@ -74,4 +76,4 @@ const Portal = () => {
   )
 }
 
-export default Portal;
+export default Dashboard;

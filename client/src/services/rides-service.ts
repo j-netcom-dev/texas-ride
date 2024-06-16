@@ -87,3 +87,8 @@ export const request_ride =async (values: any) =>{
     });
     return {ride: ride._id}
 }
+
+export const update_ride_status = async ({status, rideId}:{rideId: string, status: string}) =>{
+    const booked_ride =await client.patch(rideId).set( {status}).commit();
+    return {booked: booked_ride?._id}
+}
