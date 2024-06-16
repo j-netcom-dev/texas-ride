@@ -48,7 +48,9 @@ const Trips = () => {
         const _from =entry?.from;
         const _to =entry?.to;
         const _time =entry?.time;
-        const _customer = '-';
+        const customer_first_name =entry?.customer?.first_name;
+        const customer_last_name =entry?.customer?.last_name;
+        const _customer = customer_first_name || customer_last_name? `${customer_first_name || ''} ${customer_last_name || ''}`: '-';
         const _status =entry?.status;
         return {from: _from, to: _to, time: _time, customer: _customer, status: _status}
       });
@@ -56,21 +58,26 @@ const Trips = () => {
         const _from =entry?.from;
         const _to =entry?.to;
         const _time =entry?.time;
-        const _customer ='-';
+        const customer_first_name =entry?.customer?.first_name;
+        const customer_last_name =entry?.customer?.last_name;
+        const _customer = customer_first_name || customer_last_name? `${customer_first_name || ''} ${customer_last_name || ''}`: '-';
         const _status =entry?.status;
         return {from: _from, to: _to, time: _time, customer: _customer, status: _status}
       });
+      console.log(requested_customer_rides)
+      // @ts-ignore
+      setRequested(requested_customer_rides)
       setTotal(data.length)
-      console.log(data)
       // @ts-ignore
       setNew([...data].filter(item =>!item?.status).length);
-      setScheduled([...data].filter(item =>item.status && item.status.toLowerCase() =='in progress').length);
+      setScheduled([...data].filter(item =>item.status && item.status.toLowerCase() =='scheduled').length);
       setCompleted([...data].filter(item =>item.status && item.status.toLowerCase() =='completed').length);
       setCancelled([...data].filter(item =>item.status && item.status.toLowerCase() =='cancelled').length);
       // @ts-ignore
       setTrips(data);
     })();
   }, [newTrip]);
+
   return (
     <main className='grid grid-rows-[max-content_auto] p-4 gap-8 bg-[#dcdee0bb]'>
       <TopBar page='Trips'/>
@@ -96,10 +103,10 @@ const Trips = () => {
             </div>
           </form>
         </GridItem>
-        <GridItem title={(trips && trips.length)? 'Ride Requests': ''} title_alignment='left'>
-          {(trips && trips.length)? <DataTable trips ={trips}/>:<div>No requests yet</div>}
+        <GridItem title={(requested && requested.length)? 'Ride Requests': ''} title_alignment='left' justify={`${requested.length?'justify-start': 'justify-center'}`}>
+          {(requested && requested.length)? <DataTable trips ={requested}/>:<div>No ride requests yet</div>}
         </GridItem>
-        <GridItem title={(trips && trips.length)? 'My Trips': ''} title_alignment='left'>{(trips && trips.length)? <DataTable trips ={trips}/>:<div>No trips yet</div>}</GridItem>
+        <GridItem title={(trips && trips.length)? 'My Trips': ''} title_alignment='left' justify={`${trips.length?'justify-start': 'justify-center'}`}>{(trips && trips.length)? <DataTable trips ={trips}/>:<div>No trips yet</div>}</GridItem>
       </div>
     </main>
   )

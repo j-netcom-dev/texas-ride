@@ -24,7 +24,9 @@ const Portal = () => {
         const _from = entry?.from;
         const _to = entry?.to;
         const _time = entry?.time;
-        const _customer = '-';
+        const customer_first_name =entry?.customer?.first_name;
+        const customer_last_name =entry?.customer?.last_name;
+        const _customer = customer_first_name || customer_last_name? `${customer_first_name || ''} ${customer_last_name || ''}`: '-';
         const _rating =entry?.reviews? entry?.reviews.rating || 0: 0;
         const _status = entry?.status;
         return {from: _from, to: _to, time: _time, customer: _customer, status: _status, rating: _rating}
@@ -34,7 +36,7 @@ const Portal = () => {
       setTrips([...data]);
       const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
       const dailyStats: Record<string, number> ={Sun: 0, Mon: 0, Tue: 0, Wed: 0, Thu: 0, Fri: 0, Sat: 0};
-      [...data.filter(item => item.status)].forEach(item =>{
+      [...data.filter(item => item.status.toLowerCase() =='completed')].forEach(item =>{
         const date =new Date(item?.time);
         const day =dayNames[date.getDay()];
         // @ts-ignore
@@ -44,7 +46,7 @@ const Portal = () => {
       // @ts-ignore
       const ratings =data.filter(item =>item.rating).map(item =>item.rating)
       // @ts-ignore
-      setClientRating(Number(ratings.reduce((prev) =>prev) /ratings.length).toFixed(1));
+      setClientRating(ratings?.length?Number(ratings.reduce((prev) =>prev) /ratings.length).toFixed(1): 0);
       const dailyRidesStats =[...Object.keys(dailyStats)].map(key =>{
         return {name: key, rides: dailyStats[key]}
       })
@@ -65,7 +67,7 @@ const Portal = () => {
         </div>
         <div className="grid xl:grid-cols-2 w-full gap-10">
           <GridItem title='Rides on each week day'><BarChartComponent data={dailyRides} /></GridItem>
-          <GridItem title={(trips && trips.length)? 'Recent Trips': ''} >{(trips && trips.length)? <DataTable trips ={trips.slice(0, 5)}/>:<div>No trips yet</div>}</GridItem>
+          <GridItem title={(trips && trips.length)? 'Recent Trips': ''} justify={`${trips.length?'justify-start': 'justify-center'}`}>{(trips && trips.length)? <DataTable trips ={trips.slice(0, 5)}/>:<div>No trips yet</div>}</GridItem>
         </div>
       </div>
     </main>

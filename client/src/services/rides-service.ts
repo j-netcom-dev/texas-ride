@@ -19,9 +19,9 @@ export  const create_ride =async (values: any) =>{
     return {ride: ride._id}
 }
 export const get_driver_rides =async (driver: {driver: string}) =>{
-    const query = groq`*[_type == "ride" && driver._ref == $driver]{ _id, from, to, time,
-    driver->{ _id, firstName, lastName, photo },
-    customer->{ _id, firstName, lastName },
+    const query = groq`*[_type == "ride" && driver._ref == $driver]{ _id, from, to, time, status,
+    driver->{ _id, first_name, last_name, photo },
+    customer->{ _id, first_name, last_name, photo },
     "reviews": *[_type == "review" && references(^._id)][0]{
       rating, review, customer->{ first_name, last_name, photo }
     }
@@ -46,7 +46,7 @@ export const book_ride =async ({rideId, customerId, driver}: {rideId: string, cu
 
     const booked_ride =await client.patch(rideId).set(
         {
-            status:  'In Progress',
+            status:  'Scheduled',
             customer: {
                 _type: 'reference',
                 _ref: customerId,
@@ -59,12 +59,12 @@ export const book_ride =async ({rideId, customerId, driver}: {rideId: string, cu
 }
 
 export const fetch_available_rides = async () =>{
-    const query = groq`*[_type == "ride" && status ==null]{_id,  from, to, time, driver->{first_name, last_name, photo}}`;
+    const query = groq`*[_type == "ride" && (status ==null && customer==null)]{_id,  from, to, time, driver->{first_name, last_name, photo}}`;
     return await client.fetch(query);
 }
 
 export const fetch_requested_rides = async () =>{
-    const query = groq`*[_type == "ride" && status ==null]{_id,  from, to, time, customer->{first_name, last_name, photo}}`;
+    const query = groq`*[_type == "ride" && (status ==null && driver ==null)]{_id,  from, to, time, customer->{first_name, last_name, photo}}`;
     return await client.fetch(query);
 }
 
