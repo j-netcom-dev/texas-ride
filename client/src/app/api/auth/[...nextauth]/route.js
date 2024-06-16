@@ -8,7 +8,7 @@ async function login(credentials){
     return {_id, role}
 }
 
-export const authOptions ={
+const authOptions ={
     pages: {
         signIn: '/auth/login',
       },

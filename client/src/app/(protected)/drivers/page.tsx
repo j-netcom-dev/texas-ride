@@ -48,7 +48,7 @@ const Dashboard = () => {
       // @ts-ignore
       const ratings =data.filter(item =>item.rating).map(item =>item.rating)
       // @ts-ignore
-      setClientRating(ratings?.length?Number(ratings.reduce((prev) =>prev) /ratings.length).toFixed(1): 0);
+      setClientRating(ratings?.length? Number(ratings.reduce((accum, prev) =>accum +prev, 0) /ratings.length).toFixed(1): 0);
       const dailyRidesStats =[...Object.keys(dailyStats)].map(key =>{
         return {name: key, rides: dailyStats[key]}
       })
@@ -59,6 +59,7 @@ const Dashboard = () => {
   }, []);
   return (
     <main className='grid grid-rows-[max-content_auto] p-4 gap-8 bg-[#dcdee0bb]'>
+
       <TopBar page='Dashboard'/>
       <div className="flex flex-col gap-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 w-full gap-8">
