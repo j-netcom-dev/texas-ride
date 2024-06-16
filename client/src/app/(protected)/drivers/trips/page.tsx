@@ -64,7 +64,6 @@ const Trips = () => {
         const _status =entry?.status;
         return {from: _from, to: _to, time: _time, customer: _customer, status: _status}
       });
-      console.log(requested_customer_rides)
       // @ts-ignore
       setRequested(requested_customer_rides)
       setTotal(data.length)

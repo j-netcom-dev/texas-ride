@@ -1,14 +1,14 @@
 'use client';
 
 import TopBar from '@/components/TopBar';
-import DataCard from '@/components/DataCard';
-import { Boxes, CarFront, CircleCheckBig, Star } from 'lucide-react';
-import GridItem from '@/components/GridItem';
-import DataTable from '@/components/DataTable';
 import {useEffect, useState} from "react";
 import {getSession} from "next-auth/react";
+import GridItem from '@/components/GridItem';
+import DataCard from '@/components/DataCard';
+import DataTable from '@/components/DataTable';
 import {get_driver_rides} from "@/services/rides-service";
 import BarChartComponent from "@/components/charts/BarChart";
+import { Boxes, CarFront, CircleCheckBig, Star } from 'lucide-react';
 
 const Portal = () => {
   const [clientRating, setClientRating] =useState(0.0)
@@ -36,7 +36,7 @@ const Portal = () => {
       setTrips([...data]);
       const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
       const dailyStats: Record<string, number> ={Sun: 0, Mon: 0, Tue: 0, Wed: 0, Thu: 0, Fri: 0, Sat: 0};
-      [...data.filter(item => item.status.toLowerCase() =='completed')].forEach(item =>{
+      [...data.filter(item => item.status && item.status.toLowerCase() =='completed')].forEach(item =>{
         const date =new Date(item?.time);
         const day =dayNames[date.getDay()];
         // @ts-ignore
