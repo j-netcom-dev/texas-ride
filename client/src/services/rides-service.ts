@@ -33,7 +33,10 @@ return await client.fetch(query, params);
 }
 
 export const get_client_rides =async (customer: string) => {
-    const query = groq`*[_type =='ride' && customer._ref ==$customer] { _id, from, to, time, status, driver->{ first_name, last_name }}`;
+    const query = groq`*[_type =='ride' && customer._ref ==$customer] { 
+    _id, from, to, time, status, driver->{ first_name, last_name },
+    "review": *[_type == "review" && references(^._id)][0]{ _id }
+    }`;
     return await client.fetch(query, {customer});
 
 }
