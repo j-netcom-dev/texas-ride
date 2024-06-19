@@ -62,21 +62,23 @@ const Trips = () => {
         const _from =entry?.from;
         const _status =entry?.status;
         const _time =format_time(entry?.time);
+        const _customer_phone =entry?.customer?.phone;
         const customer_last_name =entry?.customer?.last_name;
         const customer_first_name =entry?.customer?.first_name;
         const _customer = customer_first_name || customer_last_name? `${customer_first_name || ''} ${customer_last_name || ''}`: '-';
-        return {_id, from: _from, to: _to, time: _time, customer: _customer, status: _status}
+        return {_id, from: _from, to: _to, time: _time, customer: _customer, status: _status, phone: _customer_phone}
       });
       const requested_customer_rides =[...ride_requests].map(entry =>{
         const _id =entry?._id;
         const _from =entry?.from;
         const _to =entry?.to;
         const _time =format_time(entry?.time);
+        const _customer_phone =entry?.customer?.phone;
         const customer_first_name =entry?.customer?.first_name;
         const customer_last_name =entry?.customer?.last_name;
         const _customer = customer_first_name || customer_last_name? `${customer_first_name || ''} ${customer_last_name || ''}`: '-';
         const _status =entry?.status;
-        return {from: _from, to: _to, time: _time, customer: _customer, status: _status, _id}
+        return {from: _from, to: _to, time: _time, customer: _customer, status: _status, _id, phone: _customer_phone}
       });
       // @ts-ignore
       setRequested(requested_customer_rides)
