@@ -48,10 +48,11 @@ const Trips = () => {
                 const _status =entry?.status;
                 const _reviewed =!!entry?.review;
                 const _time =format_time(entry?.time);
+                const _driver_phone =entry?.driver?.phone;
                 const driver_last_name =entry?.driver?.last_name;
                 const driver_first_name =entry?.driver?.first_name;
                 const _driver = driver_first_name || driver_last_name? `${driver_first_name || ''} ${driver_last_name || ''}`: '-';
-                return {_id, from: _from, to: _to, time: _time, driver: _driver, status: _status, reviewed: _reviewed}
+                return {_id, from: _from, to: _to, time: _time, driver: _driver, status: _status, reviewed: _reviewed, phone: _driver_phone}
             });
             setTotal(data.length)
             // @ts-ignore
